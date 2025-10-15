@@ -1,0 +1,124 @@
+#!/bin/sh
+set -e
+
+version_ge() {
+    # usage: version_ge "MIN" "HAVE"
+    # returns 0 if HAVE >= MIN, else 1
+    awk -v a="$1" -v b="$2" '
+    function splitv(s, A,   n,i){ n=split(s, A, "."); for(i=n+1;i<=8;i++) A[i]=0; return n }
+    BEGIN {
+        na = splitv(a, A)
+        nb = splitv(b, B)
+        for (i=1;i<=8;i++) {
+            if (A[i]+0 < B[i]+0) exit 0
+            if (A[i]+0 > B[i]+0) exit 1
+        }
+        exit 0
+    }'
+}
+
+check_command() {
+    cmd=$1
+    desc=$2
+    version_arg=${3:-"--version"}
+    min_version=$4
+
+    printf "Checking that %s is installed and on the path ... " "$desc"
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "FAILED"
+        echo "Error: $desc is not installed or not on the path."
+        exit 1
+    fi
+    echo "OK"
+
+    if [ -n "$min_version" ]; then
+        printf "Checking %s version (>= %s) ... " "$desc" "$min_version"
+        ver_output=$("$cmd" $version_arg 2>&1 | sed -n '1p')
+        ver_num=$(printf '%s\n' "$ver_output" | awk '
+            BEGIN{ver=""}
+            {
+                if (match($0, /[0-9]+(\.[0-9]+)+/)) {
+                    ver = substr($0, RSTART, RLENGTH)
+                    print ver
+                    exit
+                }
+            }')
+        if [ -z "$ver_num" ]; then
+            echo "FAILED"
+            echo "Error: Could not determine $desc version."
+            exit 1
+        fi
+        if ! version_ge "$min_version" "$ver_num"; then
+            echo "FAILED"
+            echo "Error: $desc version $ver_num is less than required $min_version."
+            exit 1
+        fi
+        printf "%s OK\n" "$ver_num"
+    fi
+}
+
+check_command "Rscript" "Rscript" "--version" "4.0.0"
+
+printf "Running r-pkg-check.R ... "
+if Rscript r-pkg-check.R; then
+    echo "OK"
+else
+    echo "FAILED"
+    exit 1
+fi
+
+printf "Running r-pkg-version-check.R ... "
+if Rscript r-pkg-version-check.R; then
+    echo
+else
+    echo "FAILED ... but this is probably not your fault. Please contact the corresponding author."
+    echo
+    exit 1
+fi
+
+check_command "pdflatex" "pdflatex" "--version"
+check_command "bibtex" "bibtex" "--version"
+
+missing_pkgs=0
+echo "Checking for LaTeX packages used in preamble.tex ..."
+
+pkgs=$(
+    awk '
+    {
+        s=$0
+        while (match(s, /\\usepackage(\[[^]]*])?{[^}]+}/)) {
+            blk = substr(s, RSTART, RLENGTH)
+            # remove up to last "{"
+            sub(/^.*{/, "", blk)
+            # remove trailing "}"
+            sub(/}$/, "", blk)
+            print blk
+            s = substr(s, RSTART + RLENGTH)
+        }
+    }' preamble.tex | tr ',' '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sort -u
+)
+
+if ! command -v kpsewhich >/dev/null 2>&1; then
+    echo "FAILED"
+    echo "Error: 'kpsewhich' command not found. Please install LaTeX."
+    exit 1
+fi
+
+
+for pkg in $pkgs; do
+    [ -z "$pkg" ] && continue
+    printf "  Package '%s' ... " "$pkg"
+    if kpsewhich "$pkg.sty" >/dev/null 2>&1; then
+        echo "OK"
+    else
+        echo "FAILED"
+        echo "Error: LaTeX package '$pkg' not found. Please install it."
+        missing_pkgs=1
+    fi
+done
+
+if [ "$missing_pkgs" -ne 0 ]; then
+    exit 1
+fi
+
+Rscript pull-data.R
