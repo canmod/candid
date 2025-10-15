@@ -1,0 +1,14 @@
+postal,lx,ly,use_leader,region
+NL,-53,57,TRUE,Atlantic
+PE,-60,42,TRUE,Atlantic
+NS,-65,40,TRUE,Atlantic
+NB,-72,43,TRUE,Atlantic
+QC,-73,51,FALSE,Québec
+ON,-87,51,FALSE,Ontario
+MB,-97,55.5,FALSE,Prairies
+SK,-106,52,FALSE,Prairies
+AB,-115,54.5,FALSE,Prairies
+BC,-125,57,FALSE,British Columbia
+YT,-136,63,FALSE,Territories
+NT,-118,63.8,FALSE,Territories
+NU,-96,65.5,FALSE,Territories
