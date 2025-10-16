@@ -16,3 +16,22 @@ What does "3-quarterly" data mean?  At 9 month intervals?
 
 > SW: Yes. We could remove them from the dataset, but there are only ~500 records so I don't feel that it matters either way.
 
+# notes on ms, 16 Oct 2025
+
+## Intro
+
+line 5.  Here we say at least back to 1903, but in the abstract we refer to the late 19th century.  Do we clarify what data exist before 1903?
+
+## Results
+
+"harmonized" is first used here but not defined.
+
+Figure 2 caption needs slight revision in light of changes we agreed on in colours etc.
+
+I gather they require the figures in separate files at this stage?  It makes it painful to navigate because the hyperlinks don't take you to the figures.
+
+You had \aref{fig:polio-peak-month}, which I changed to \cref{fig:polio-peak-month}, but I wonder if you intended this to come out differently and say section something figure something.  Certainly the way it was was wrong (\S Fig S6).
+
+
+
+
