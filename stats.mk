@@ -20,12 +20,12 @@ STATS_DATA += perc_pd_loc_no_err
 STATS_DATA += perc_ts_cc_err_handwritten
 STATS_DATA += perc_yr_loc_no_err
 
-## stats created in Fig4.R
+## stats created in Fig2.R
 STATS_HEATMAP := n-diseases-page-1
 STATS_HEATMAP += n-diseases-page-2
 STATS_HEATMAP += n-diseases-page-3
 
-## stats created in Fig7.R
+## stats created in Fig5.R
 STATS_POLIO := polio-max-week-peak
 STATS_POLIO += polio-max-year
 STATS_POLIO += polio-max-year-peak
@@ -33,7 +33,7 @@ STATS_POLIO += polio-min-week-peak
 STATS_POLIO += polio-min-year
 STATS_POLIO += polio-min-year-peak
 
-## stats created in Fig8.R
+## stats created in Fig6.R
 STATS_WC := n_territories_wc_max_90s
 STATS_WC += n_on_wc_max_90s
 

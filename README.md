@@ -2,7 +2,7 @@
 
 This repository contains all code used to produce the CANDID manuscript and associated figures, tables, and statistics.
 
-All that should be required to reproduce the manuscript is to run the following from a unix-like command line.
+The following steps from a unix-like command line should reproduce the manuscript.
 
 ```
 ./configure
