@@ -10,5 +10,9 @@ The new title is good, but removes the clarity of the length of the data set.  I
 - A Comprehensive Dataset of Notifiable Disease Incidence in Canada covering more than a century
 - A Comprehensive Dataset of Notifiable Disease Incidence in Canada since the early 20th century
 
+> SW: I agree and like the first option best because it is shortest.
+
 What does "3-quarterly" data mean?  At 9 month intervals?
+
+> SW: Yes. We could remove them from the dataset, but there are only ~500 records so I don't feel that it matters either way.
 
