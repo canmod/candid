@@ -32,6 +32,25 @@ I gather they require the figures in separate files at this stage?  It makes it 
 
 You had \aref{fig:polio-peak-month}, which I changed to \cref{fig:polio-peak-month}, but I wonder if you intended this to come out differently and say section something figure something.  Certainly the way it was was wrong (\S Fig S6).
 
+## Discussion
+
+I'm not sure what this means:
+
+For example, we will refine the regional stratification of whooping cough (\cref{fig:whooping-plot}) to test existing hypotheses \cite{thommes2020revisiting} on its 1990s resurgence. 
+
+What kind of refinement do you mean? How will it allow us to address the questions better than we did here?  The phrasing sounds like we havne't yet addressed them.
+
+ref [24] is not entered correctly.
+
+Limitations:  paragraphs 2 and 3 seems to be different versions of the same text ???
+I suspect you intended to delete the second version.
+
+This sounds a big odd:
+
+Gaps range from missing weeks (e.g., lost book pages) to data-entry errors, often from unclear handwritten records (§4.5).
+
+The problem is that it sounds like you mean errors by the people who made the historical documents, but then why would that be from unclear handwriting.  Are you referring to the difficult of dealing with hard-to-read handwritten documents?
+
 
 
 
