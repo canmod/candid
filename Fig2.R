@@ -9,7 +9,7 @@ library(cowplot)
 library(Cairo)
 library(magick)
 
-n_pages = 3 ## number of figures in this series
+n_pages = 3    ## number of figures in this series
 first_page = 2 ## number labelling the first figure in this series
 
 canmod_cdi_normalized = readRDS("canmod-cdi-normalized.rdata")
@@ -20,8 +20,10 @@ normalized_for_extent_plot = (canmod_cdi_normalized
   |> mutate(time_scale = ifelse(time_scale == "3qr", "qr", time_scale))
   |> mutate(time_scale = case_when(
         time_scale == "wk" ~ "weekly"
+      , time_scale == "2wk" ~ "2-weekly"
       , time_scale == "mo" ~ "monthly"
       , time_scale == "qr" ~ "quarterly"
+      , time_scale == "3qr" ~ "3-quarterly"
   ))
 
   |> iidda_defaults(
@@ -48,8 +50,10 @@ plots = iidda_availability(normalized_for_extent_plot
   , page_size = diseases_per_page
   , scale_colour = c(
         weekly    = "#007FFF"
+      , `2-weekly` = "limegreen"
       , monthly   = "#FF7F00"
       , quarterly = "#DC143C"
+      , `3-quarterly` = "purple"
     )
   , title_colour = "Time Scale:"
   , title_totals = "Total\nCases"
@@ -72,7 +76,7 @@ plots = iidda_availability(normalized_for_extent_plot
         , "CA-NT"
         , "CA-NU"
       ) |> rev()
-  , colour_order = c("weekly", "monthly", "quarterly")
+  , colour_order = c("weekly", "2-weekly", "monthly", "quarterly", "3-quarterly")
   , x_title = "Year"
   , x_breaks = seq(
         as.POSIXct("1910-01-01")
