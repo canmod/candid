@@ -8,7 +8,7 @@ SHELL := /bin/sh
 -include artifacts.mk
 
 
-all : ms.pdf 
+all : ms.pdf
 
 ms.pdf : ms.tex preamble.tex
 ms.pdf : $(wildcard *.bib) $(wildcard *.sty) $(wildcard *.cls)
@@ -34,26 +34,26 @@ Fig%.tif : Fig%.R
 	@echo "--------------------"
 	@Rscript $<
 
-Fig3.tif Fig4.tif $(STATS_HEATMAP) : Fig2.R
+Fig5.tif Fig6.tif $(STATS_HEATMAP) : Fig4.R
 	@echo "--------------------"
-	@echo "Rendering Fig2.tif, Fig3.tif, and Fig4.tif"
-	@echo "using Fig2.R because these get made together"
+	@echo "Rendering Fig4.tif, Fig5.tif, and Fig6.tif"
+	@echo "using Fig4.R because these get made together"
 	@echo "--------------------"
-	@Rscript Fig2.R
+	@Rscript Fig4.R
 
-$(STATS_POLIO) polio-hist.png : Fig5.R
+$(STATS_POLIO) polio-hist.png : Fig7.R
 	@echo "--------------------"
-	@echo "Rendering Fig5.tif and associated artifacts"
-	@echo "using Fig5.R because these get made together"
+	@echo "Rendering Fig7.tif and associated artifacts"
+	@echo "using Fig7.R because these get made together"
 	@echo "--------------------"
-	@Rscript Fig5.R
+	@Rscript Fig7.R
 
-$(STATS_WC) : Fig6.R
+$(STATS_WC) : Fig8.R
 	@echo "--------------------"
-	@echo "Rendering Fig6.tif and associated stats"
-	@echo "using Fig6.R because these get made together"
+	@echo "Rendering Fig8.tif and associated stats"
+	@echo "using Fig8.R because these get made together"
 	@echo "--------------------"
-	@Rscript Fig6.R
+	@Rscript Fig8.R
 
 Table1.tex $(STATS_TABLE) : Table1.R
 	@echo "--------------------"
@@ -99,7 +99,7 @@ output/% : %
 
 clean :
 	@make clean-latex
-	@make clean-figs-tables-stats	
+	@make clean-figs-tables-stats
 
 clean-latex :
 	@rm -f *.aux *.log *.bbl *.blg *.out *.toc *.lot *.lof *.fls *.fdb_latexmk
