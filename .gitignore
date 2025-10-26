@@ -74,3 +74,4 @@ wordcount.txt
 
 ## contents of the output directory are not ignored by git
 !output/**
+output/**/.DS_Store
