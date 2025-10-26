@@ -1,0 +1,5 @@
+library(magick)
+tif_file <- commandArgs(trailingOnly = TRUE)
+pdf_file = sub("^(Fig[0-9]+\\.)(tif)$", "\\1pdf", tif_file)
+image = tif_file |> image_read()
+image |> image_write(pdf_file, format = "pdf")
