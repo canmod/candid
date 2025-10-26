@@ -1,0 +1,12 @@
+("*.R"
+  |> file.path()
+  |> Sys.glob()
+  |> lapply(readLines)
+  |> lapply(grep, pattern = "library\\([a-zA-Z][a-zA-Z0-9._]*\\)", value = TRUE)
+  |> unlist()
+  |> unique()
+  |> sub(pattern = "^library", replacement = "")
+  |> gsub(pattern = "[()]", replacement = "")
+  |> trimws()
+  |> dput(file = "pkgs-loaded-with-library.R")
+)
