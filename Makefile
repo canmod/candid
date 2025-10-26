@@ -28,6 +28,12 @@ $(STATS_DATA) : stats-data.R
 	@echo "--------------------"
 	@Rscript stats-data.R
 
+Fig%.pdf : Fig%.tif tif-to-pdf.R
+	@echo "--------------------"
+	@echo "Converting $< to $@"
+	@echo "--------------------"
+	@Rscript tif-to-pdf.R $< 
+
 Fig%.tif : Fig%.R
 	@echo "--------------------"
 	@echo "Rendering $@ with $<"
@@ -91,11 +97,6 @@ wordcount.txt : ms.tex
 	@echo "Word count (including captions and headers):"
 	@cat wordcount.txt
 	@echo "--------------------"
-
-output/% : %
-	@mkdir -p output
-	@cp -r $< $@
-
 
 clean :
 	@make clean-latex

@@ -9,6 +9,11 @@ library(cowplot)
 library(Cairo)
 library(magick)
 
+## This script actually makes Figures 4-6, because they are related
+## and and harmonized so that they all have the same width of each
+## of the plotting elements. You can think of them as the same
+## figure that spans multiple pages.
+
 n_pages = 3    ## number of figures in this series
 first_page = 4 ## number labelling the first figure in this series
 
@@ -98,11 +103,13 @@ plots = iidda_availability(normalized_for_extent_plot
 )
 
 save_plots = function(plots, first_page) {
+  ratio = 8.75 / 7.5
+  width = 7.5
   for (page in seq_len(n_pages)) {
     filename = sprintf("Fig%s.tif", page + first_page - 1L)
     tiff(filename
-      , width = 7.5
-      , height = 8.75
+      , width = width
+      , height = width * ratio
       , units = "in"
       , res = 600 ## plos requires 300-600
     )

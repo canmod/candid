@@ -353,7 +353,7 @@ polio_plot = wrap_plots(
 ggplot2::ggsave(
     file = filename
   , plot = polio_plot
-  , width = 6, height = 6, units = "in"
+  , width = 5, height = 5, units = "in"
   , dpi = 600
 )
 (filename

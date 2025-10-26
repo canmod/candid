@@ -3,6 +3,8 @@
 # so they need to be listed explicitly
 FIGS := $(patsubst %.R,%.tif,$(wildcard Fig*.R)) Fig5.tif Fig6.tif
 
+FIGS_PDF := $(FIGS:.tif=.pdf)
+
 # there is only one table, but why not be consistent?
 TABLES := $(patsubst %.R,%.tex,$(wildcard Table*.R))
 
@@ -124,4 +126,4 @@ USED_FLOATS += hepatitis-A-B_3.png
 USED_FLOATS += hepatitis-A-B_4.png
 USED_FLOATS += chickenpox.png polio-hist.png
 
-ALL_FIGS_AND_TABLES := $(FIGS) $(TABLES) $(FIGS_AGENCY) $(FIGS_PORTAL) $(FIGS_HIERARCHY)
+ALL_FIGS_AND_TABLES := $(FIGS) $(FIGS_PDF) $(TABLES) $(FIGS_AGENCY) $(FIGS_PORTAL) $(FIGS_HIERARCHY)

@@ -232,7 +232,7 @@ if (interactive()) plot(whooping_plot)
 ggplot2::ggsave(
     file = filename
   , plot = whooping_plot
-  , width = 6, height = 8, units = "in"
+  , width = 4.125, height = 5.5, units = "in"
   , dpi = 600
 )
 (filename

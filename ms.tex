@@ -86,14 +86,16 @@ We began searching for published and unpublished Canadian historical infectious 
 
 We manually entered the information in scans into replica Excel spreadsheets (i.e., digital spreadsheets in which the layout of each spreadsheet matches the original), to facilitate comparing reproductions with their sources (\cref{fig:typewritten-eg}). The Ontario Ministry of Health data were entered before our comprehensive effort and were only partially entered as replicas (they are the sole exception). Reading scans and interpreting handwritten sources (e.g., \cref{fig:handwritten-eg}) was often a slow, and occasionally error-prone, process. Where available in these sources, we also entered reported annual and national data to support later validation against marginal totals (\cref{sec:quality-control}). When we encountered unclear numbers in the source material, we recorded our initial guesses using a predetermined format described in \aref{sec:appendix-unharmonized}, so that they could be processed systematically. These guesses were revisited and refined as needed when validation procedures, which compared sums of incidence values with marginal totals reported in both \datacronym\ sources and the PHAC portal \cite{totten2019updates}, revealed discrepancies. Scripted data preparation pipelines (\cref{sec:data-prep}) facilitated updates throughout this process. We provide details on our data entry process in \aref{sec:appendix-data-entry}.
 
-\begin{figure}[!htb]
-\caption{\textbf{Example of a typewritten source document prepared using a typewriter.} The top panel shows a scan of part of this source document, and the bottom panel shows our replica in Microsoft Excel of this same part.}
-\label{fig:typewritten-eg}
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig1.pdf}
+  \caption{\textbf{Example of a typewritten source document prepared using a typewriter.} The top panel shows a scan of part of this source document, and the bottom panel shows our replica in Microsoft Excel of this same part.}
+  \label{fig:typewritten-eg}
 \end{figure}
 
-\begin{figure}[!htb]
-\caption{\textbf{Examples of handwritten data}. Most handwritten hard copies, such as the 1939 erysipelas and gonococcal data from the Ontario Ministry of Health (A), are easy to read. Others, like the 1955 poliomyelitis data from Statistics Canada (B), are difficult to read, posing challenges for digitization.}
-\label{fig:handwritten-eg}
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig2.pdf}
+  \caption{\textbf{Examples of handwritten data}. Most handwritten hard copies, such as the 1939 erysipelas and gonococcal data from the Ontario Ministry of Health (A), are easy to read. Others, like the 1955 poliomyelitis data from Statistics Canada (B), are difficult to read, posing challenges for digitization.}
+  \label{fig:handwritten-eg}
 \end{figure}
 
 \subsection{Data preparation}\label{sec:data-prep}
@@ -114,7 +116,7 @@ We compared sums of incidence values with marginal totals reported both in \data
 
 As of \asofnow\ \datacronym\ is based on \input{n_sources}\ sources (\cref{tab:sources-table}). \aref{sec:appendix-external-links} provides information on how to access the resulting \input{unharmonized_sample_size}\ unharmonized, \input{harmonized_sample_size}\ harmonized, and \input{normalized_sample_size}\ normalized incidence values for the provinces and territories of Canada (\cref{fig:map}).
 
-\begin{table}[!htb]
+\begin{table}[!ht]
   \centering
   \caption{\textbf{Data sources}. The Frequency column gives the shortest period over which incidence counts were reported for all diseases and locations in the source (if not all disease-location combinations have the shortest period, multiple frequencies are given). Sources that include handwritten data are indicated in the Received As column. Details on these sources are provided in \aref{sec:appendix-data-sources}.} 
   \begin{tabular}{ll>{\raggedright\arraybackslash}p{0.11\linewidth}>{\raggedright\arraybackslash}p{0.25\linewidth}>{\raggedright\arraybackslash}p{0.2\linewidth}}  
@@ -123,25 +125,50 @@ As of \asofnow\ \datacronym\ is based on \input{n_sources}\ sources (\cref{tab:s
 \label{tab:sources-table}
 \end{table}
 
-\begin{figure}[!htb]
-\caption{\textbf{Map of Canada with provinces and territories labelled}. The map is used to show the order of provinces and territories in \cref{fig:extent-1,fig:extent-2,fig:extent-3}, and the order of provinces in the poliomyelitis example (\cref{sec:polio-results}). The map also illustrates the grouping of provinces and territories into regions that are used in the whooping cough example (\cref{sec:whooping-cough-results}).}\label{fig:map}
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig3.pdf}
+  \caption{\textbf{Map of Canada with provinces and territories labelled}. The map is used to show the order of provinces and territories in \cref{fig:extent-1,fig:extent-2,fig:extent-3}, and the order of provinces in the poliomyelitis example (\cref{sec:polio-results}). The map also illustrates the grouping of provinces and territories into regions that are used in the whooping cough example (\cref{sec:whooping-cough-results}).}
+  \label{fig:map}
 \end{figure}
 
 \newpage 
 
 \cref{fig:extent-1,fig:extent-2,fig:extent-3} list the \input{n_basal_diseases}\ diseases that appear in the normalized dataset, and highlight the time periods in which weekly, monthly, or quarterly incidence data were found in each province or territory. Within each disease, vertical placement indicates data availability for a particular province or territory, ordered approximately clockwise as indicated on the map in \cref{fig:map}. The case numbers for many of these diseases are aggregated from \input{n_diseases}\ ``sub-diseases'' (\aref{sec:appendix-harmonized}), harmonizing \input{n_historical_diseases}\ unique historical name variants. The stratification of each disease into sub-diseases varied across sources (details in \aref{sec:appendix-normalized}).
 
-\begin{figure}[!htb]
-\caption{\textbf{Data availability for highly-reported diseases (top \protect\input{n-diseases-page-1}\,by total reported cases)}. Moderately- and rarely-reported diseases appear in \cref{fig:extent-2,fig:extent-3}. The diseases are ranked by the total number of cases (right panels), summed over all provinces for which data were obtained. The diseases are ordered with the largest number of cases at the top. Each incidence value, including zeros, is shown as a tiny coloured rectangle. The y-axis labels identify the disease, while the rectangle's length along the x-axis represents the temporal extent. Colours indicate reporting frequency: weekly (blue), monthly (orange), and quarterly (red). Two-weekly data are shown in green but are not included in the legend because they are too few to see without zooming. Three-quarterly data are omitted, as they are few and span most of a year (April-December 1997), providing little additional information on within-year variation. White spaces represent missing data (see \cref{sec:appendix-unharmonized} for details on the varied reasons for missing data). The vertical position within each disease denotes the province/territory, arranged roughly clockwise (east-to-west for provinces and then west-to-east for territories): NL-NS-PE-NB-QC-ON-MB-SK-AB-BC-YT-NT-NU (\cref{fig:map}). Thin horizontal patterns arise because provinces and territories differ in data availability and reporting frequency: when data are available for only some provinces, or when provinces and territories report at different time scales, the resulting variation appears as horizontal features due to the fixed top-to-bottom ordering of provinces and territories within each disease.}\label{fig:extent-1}
+\newpage
+
+\includepdf[pages=-]{Fig4.pdf}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Data availability for highly-reported diseases (top \protect\input{n-diseases-page-1}\,by total reported cases)}. Moderately- and rarely-reported diseases appear in \cref{fig:extent-2,fig:extent-3}. The diseases are ranked by the total number of cases (right panels), summed over all provinces for which data were obtained. The diseases are ordered with the largest number of cases at the top. Each incidence value, including zeros, is shown as a tiny coloured rectangle. The y-axis labels identify the disease, while the rectangle's length along the x-axis represents the temporal extent. Colours indicate reporting frequency: weekly (blue), monthly (orange), and quarterly (red). Two-weekly data are shown in green but are not included in the legend because they are too few to see without zooming. Three-quarterly data are omitted, as they are few and span most of a year (April-December 1997), providing little additional information on within-year variation. White spaces represent missing data (see \cref{sec:appendix-unharmonized} for details on the varied reasons for missing data). The vertical position within each disease denotes the province/territory, arranged roughly clockwise (east-to-west for provinces and then west-to-east for territories): NL-NS-PE-NB-QC-ON-MB-SK-AB-BC-YT-NT-NU (\cref{fig:map}). Thin horizontal patterns arise because provinces and territories differ in data availability and reporting frequency: when data are available for only some provinces, or when provinces and territories report at different time scales, the resulting variation appears as horizontal features due to the fixed top-to-bottom ordering of provinces and territories within each disease.}
+  \label{fig:extent-1}
 \end{figure}
 
-\begin{figure}[!htb]
-\caption{\textbf{Data availability for moderately-reported diseases (middle \protect\input{n-diseases-page-2}\,by total reported cases)}. Highly- and rarely-reported diseases appear in \cref{fig:extent-1,fig:extent-3}. Please see the caption for \cref{fig:extent-1} for a full description of all of these plots.}\label{fig:extent-2}
+\newpage
+
+\includepdf[pages=-]{Fig5.pdf}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Data availability for moderately-reported diseases (middle \protect\input{n-diseases-page-2}\,by total reported cases)}. Highly- and rarely-reported diseases appear in \cref{fig:extent-1,fig:extent-3}. Please see the caption for \cref{fig:extent-1} for a full description of all of these plots.}
+  \label{fig:extent-2}
 \end{figure}
 
-\begin{figure}[!htb]
-\caption{\textbf{Data availability for rarely reported diseases (bottom \protect\input{n-diseases-page-3}\,by total reported cases)}. Highly- and moderately-reported diseases appear in \cref{fig:extent-1,fig:extent-2}. Please see the caption for \cref{fig:extent-1} for a full description of all of these plots.}\label{fig:extent-3}
+\newpage
+
+\includepdf[pages=-]{Fig6.pdf}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Data availability for rarely reported diseases (bottom \protect\input{n-diseases-page-3}\,by total reported cases)}. Highly- and moderately-reported diseases appear in \cref{fig:extent-1,fig:extent-2}. Please see the caption for \cref{fig:extent-1} for a full description of all of these plots.}
+  \label{fig:extent-3}
 \end{figure}
+
+\newpage
 
 \subsection{Examples}\label{sec:illustrative-results}
 
@@ -149,17 +176,33 @@ As of \asofnow\ \datacronym\ is based on \input{n_sources}\ sources (\cref{tab:s
 
 Poliomyelitis incidence was strongly seasonal (upper panel, \cref{fig:polio-plot}), with national peaks consistently occurring between week \input{polio-min-week-peak} and \input{polio-max-week-peak} each year from \input{polio-min-year-peak} to \input{polio-max-year-peak}, after which the cycles disappeared. These annual cycles were synchronous across provinces, with peak incidence occurring around the same time in each (provincial panels, \cref{fig:polio-plot}). All national peaks fell between August and October, and most provincial peaks followed this pattern, with only a few outlying province-year combinations (\afigref{fig:polio-peak-month}). Identifying such spatial synchrony requires incidence data at sub-annual and sub-national scales.
 
-\begin{figure}[!htb]
+\newpage
+
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig7.pdf}
   \caption{\textbf{Weekly poliomyelitis incidence from \protect\input{polio-min-year} to \protect\input{polio-max-year} (square root scale)}. The vertical lines do not indicate the start of each year but mark the week of peak national incidence (top panel) in years with more than 20 cases. Provincial peaks closely align with these national peaks, indicating strong spatial synchrony. This pattern could not have been detected with annual or national data. The introduction of two important vaccination programmes are shown as blue vertical dashed lines. We plot incidence rates per 100,000 to make incidence comparable across provinces and territories, and with other studies. Methods for producing this plot are described in \aref{sec:appendix-polio}.}\label{fig:polio-plot}
 \end{figure}
+
+\newpage
 
 \subsubsection{Regional differences in whooping cough incidence}\label{sec:whooping-cough-results}
 
 Aggregating provincial whooping cough data to the national level (\cref{fig:whooping-plot}) reveals a pattern consistent with previous analyses that lacked provincial data \cite{thommes2020revisiting}. One feature of this pattern is an apparent resurgence of whooping cough in the 1990s (highlighted in \cref{fig:whooping-plot}). We find that this much-discussed resurgence (e.g., \cite{thommes2020revisiting}) was not uniformly expressed across the country (\cref{fig:whooping-plot} bottom six panels), and is clearly apparent only in the territories, the prairies, and Qu\'ebec. Throughout the 1990s, yearly cases per $100,000$ peaked at \input{n_on_wc_max_90s} in Ontario, but in the territories the peak was \input{n_territories_wc_max_90s}. The original study \cite{thommes2020revisiting} did not have the sub-national data required to explore these regional differences.
 
-\begin{figure}[!htb]
-\caption{\textbf{Regional \cite{SGC2021} differences in average annual whooping cough incidence in Canada over twelve decades (square root scale)}. The national data (top panel) are very similar to the first figure in a review based on different data sources \cite{thommes2020revisiting}. The red region (1990--1999) highlights the first resurgence in national whooping cough incidence since widespread vaccination began in 1943. This plot shows that not all regions peaked in the 1990s, a pattern that could not have been detected with the national data used in the original study. Methods for producing this plot are described in \aref{sec:appendix-whooping-cough}.}\label{fig:whooping-plot}
+\newpage
+
+\begin{figure}[!ht]
+  \includegraphics[width=0.96\textwidth]{Fig8.pdf}
 \end{figure}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Regional \cite{SGC2021} differences in average annual whooping cough incidence in Canada over twelve decades (square root scale)}. The national data (top panel) are very similar to the first figure in a review based on different data sources \cite{thommes2020revisiting}. The red region (1990--1999) highlights the first resurgence in national whooping cough incidence since widespread vaccination began in 1943. This plot shows that not all regions peaked in the 1990s, a pattern that could not have been detected with the national data used in the original study. Methods for producing this plot are described in \aref{sec:appendix-whooping-cough}.}
+  \label{fig:whooping-plot}
+\end{figure}
+
+\newpage
 
 \section{Discussion}\label{sec:interpretation}
 
