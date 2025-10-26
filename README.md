@@ -5,9 +5,12 @@ This repository contains all code used to produce the CANDID manuscript and asso
 The following steps from a unix-like command line should reproduce the manuscript.
 
 ```
+Rscript install-iidda-r-pkgs.R
 ./configure
 make
 ```
+
+The first step, `Rscript install-iidda-r-pkgs.R`, is not necessary if you already have up-to-date installations of `iidda`, `iidda.analysis`, and `iidda.api`. [These are packages](https://canmod.github.io/iidda-tools/) that we developed, which are not on [CRAN](https://cran.r-project.org/).
 
 The `configure` command does the following.
 
