@@ -1,0 +1,710 @@
+\documentclass[12pt]{article}
+\newif\ifcompare
+\comparetrue
+
+\input{preamble}
+
+%% do not count comments in the word count
+%TC:macro \david 1
+%TC:macro \sw 1
+%TC:macro \bmb 1
+%TC:macro \mr 1
+%TC:macro \jd 1
+%TC:macro \gabrielle 1
+%TC:macro \todo 1
+
+%% Show cut text with strikethrough
+\usepackage[normalem]{ulem}
+\newcommand{\stkout}[1]{{\color{blue}\ifmmode\text{\sout{\ensuremath{#1}}}\else\sout{#1}\fi}}
+
+\title{A Century of Weekly Notifiable Disease Incidence Data by Province in Canada}
+\author{
+     David J.\,D. Earn$^{1,3}$
+\and Gabrielle MacKinnon$^4$
+\and Samara Manzin$^5$
+\and Michael Roswell$^{2,6}$ % ORCID is 0000-0002-8479-9184
+\and Steve Cygu$^7$ % ORCID: 0000-0002-9284-8863
+\and Chyunfung Shi$^2$ % orchid is 0000-0003-3661-594X
+\and Benjamin M. Bolker$^{1,2}$ % ORCID id: 0000-0002-2127-0443
+\and Jonathan Dushoff$^{2,3}$ % ORCID ID: 0000-0003-0506-4794
+\and Steven C. Walker$^1$
+\and \footnotesize$^1$Department of Mathematics and Statistics,
+     McMaster University, Hamilton, Ontario, Canada, L8S 4L8;
+\and \footnotesize$^2$Department of Biology,
+     McMaster University, Hamilton, Ontario, Canada, L8S 4L8;
+\and \footnotesize$^3$M.\,G.\ DeGroote Institute for Infectious Disease Research,
+  McMaster University, Hamilton, Ontario, Canada, L8S 4L8;
+\and \footnotesize$^4$Department of Mathematics and Statistics,
+  McGill University, Montreal, Quebec, Canada;
+\and \footnotesize$^5$Department of Biology,
+  McGill University, Montreal, Quebec, Canada;
+\and \footnotesize$^6$Department of Biology,
+  University of Maryland, College Park, Maryland, USA;
+\and \footnotesize$^7$African Population Health and Research Center;
+  \\
+}
+
+\begin{document}
+
+\maketitle
+
+%\linenumbers
+
+\newpage
+
+\begin{abstract}
+
+Canadian notifiable disease surveillance programmes have recorded communicable disease incidence data, dating back to the late 19th century. A Public Health Agency of Canada web-portal provides summaries of these data from 1924--2023, but lacks details on how incidence varies seasonally and geographically among provinces. The sub-annual (weekly, monthly, quarterly) and sub-national (provincial, territorial) data required to study such patterns appear in published or archived government documents, but are only available in typewritten or handwritten hard copies.
+
+We digitized and collated these sources to make sub-annual and sub-national Canadian disease incidence data conveniently available for researchers. We manually transcribed hard copies into digital spreadsheets resembling the originals, enabling accurate transcription through easier cross-checking. We supplemented these historical data sources with more recent digital spreadsheets obtained directly from two provincial agencies. We standardized and combined these spreadsheets into consistent, machine-readable CSV files containing \input{unharmonized_sample_size}\ incidence values from 1903--2021.
+
+Because multiple publications and agencies reproduced case counts from the same surveillance system, and many publications reported the same cases at multiple levels of aggregation, many cases were counted more than once among these \input{unharmonized_sample_size}\ incidence values. We reconciled overlapping counts to produce a dataset containing \input{normalized_sample_size}\ unique incidence values at sub-national and sub-annual scales (\input{normalized_sample_size_wk}\ weekly; \input{normalized_sample_size_2wk}\ 2-weekly; \input{normalized_sample_size_mo}\ monthly; \input{normalized_sample_size_qr}\ quarterly; \input{normalized_sample_size_3qr}\ 3-quarterly) covering \input{n_basal_diseases}\ diseases stratified by province or territory. We illustrate the value of these sub-annual and sub-national data using two examples: synchronized annual cycles of poliomyelitis across provinces and spatially heterogeneous resurgence of whooping cough in the 1990s.
+
+Canada's infectious disease surveillance has produced a detailed record of sub-annual and sub-national disease incidence data that remains largely unexplored. This record is now available as the \datname\ (\datacronym), hosted on a publicly accessible website along with code to reproduce it, and scans of the original sources.
+
+\end{abstract}
+
+\newpage
+
+\section{Introduction}\label{sec:intro}
+
+Learning from data on past communicable disease outbreaks and recurrent epidemics is an important component of public health planning \cite{AndeMay91,Earn+00,BaucEarn03,HempEarn15,ogden2024mathematical}. The year 2024 marked the 100th anniversary since the Canadian federal government began collecting such data through notifiable disease surveillance programmes \cite{summaryNotifiable1954,sockett1996communicable,carter1991establishing,doherty2000establishing,totten2019updates}. Several provinces conducted surveillance before 1924 going back to the late 19th century, although here we focus on the period from 1903 to 2021. The Public Health Agency of Canada (PHAC) provides summaries of these data as annual, national totals since 1924 through an online portal (\url{https://diseases.canada.ca/notifiable}). These coarsely aggregated data are useful for understanding broad trends, but provide no information on seasonal patterns of incidence within years or on spatial patterns across provinces. For example, annual data cannot be used to estimate the timing and shape of an outbreak curve, and national data cannot be used to assess whether provinces displayed different patterns of spread in the vaccine era.
+
+The Canadian notification system has at times collected more informative weekly, monthly, and quarterly incidence data, stratified by disease and province/territory, but these data are not available through the portal (and some were never published; see \cite{summaryNotifiable1954}). We use the term sub-annual to refer to surveillance data reported at a finer temporal resolution than one year (e.g., weekly, monthly, or quarterly), as opposed to annual data aggregated over the full year. Likewise, we use the term sub-national to refer to data reported at a finer spatial resolution than the national level (e.g., by province or territory). These higher-resolution data enable investigation of variation within years and across regions, and can be aggregated to coarser temporal or spatial resolutions when broader comparisons are needed. The reverse, however, is not possible, making higher-resolution data inherently more versatile.
+
+It has generally been prohibitively challenging for researchers to find and access these sub-annual and sub-national data. Still, we show here that much of this information exists in government publications (either as hard copy reference material or online), in data and documents obtained directly from government agencies, and in provincial publications, some of which predate the establishment of the federal system in 1924. This information appeared under a variety of evolving titles often issued by Statistics Canada (and its predecessor the Dominion Bureau of Statistics), Health Canada, and provincial and territorial health departments. The diversity of publication formats and naming conventions has made systematic retrieval challenging. To address this, we have documented the available resources in this literature (see \aref{sec:appendix-data-sources}) and digitized the data they contain using open-source tools that we developed. Here, we introduce \datacronym\ (\datname), a curated dataset that integrates and cleans these disparate data sources to create a comprehensive and accessible digital record of sub-annual (weekly, monthly, quarterly) and sub-national (provincial, territorial) Canadian notifiable disease incidence data---including substantial amounts of data that have never previously been published. Our objective is to make these sub-annual and sub-national disease incidence data, which have been difficult to obtain, conveniently available for public health and research use.
+
+With this paper we announce the existence of \datacronym\ on a publicly available web site (\aref{sec:appendix-external-links}) and illustrate its value. Two examples illustrate the advantages of the sub-annual and sub-national data provided by \datacronym. First, we describe how poliomyelitis incidence was strongly and consistently seasonal from \input{polio-min-year-peak} to \input{polio-max-year-peak}, and that the yearly peaks were synchronous across provinces. This pronounced synchrony contrasts with patterns in the United States \cite{martinez2015unraveling}, but can be interpreted within the context of a broader latitudinal gradient in the timing of seasonal epidemic peaks across North America. Second, the well-studied apparent resurgence of whooping cough in the 1990s showed significant regional variation. While the territories, prairie provinces, and Qu\'ebec experienced clear increases in incidence, this pattern was not evident in British Columbia, Ontario, and the Atlantic region. We use a simple graphical approach in these examples, illustrating how these data can inform fundamental questions in epidemiology. Formal statistical analyses that dig deeper into specific questions will follow in subsequent publications. The \datname\ (\datacronym) has the potential to drive many studies by the broader public health research community.
+
+\section{Materials and Methods}\label{sec:methods}
+
+\subsection{Data sources}\label{sec:data-sources}
+
+We began searching for Canadian historical infectious disease notification data in 2000. We focused on sub-annual and sub-national data collected through the surveillance programs described in \aref{sec:appendix-data-sources}, particularly incidence over entire provinces and territories, since finer spatial resolution data were rare. We compiled provincial and territorial population data \cite{canada1925sixth,statistics1973population,statcan2021population} to compute comparable incidence rates per 100,000. We acquired data in any of three formats: (1) paper hard copies, (2) digitally produced PDF files, or (3) spreadsheets (including CSV files). We scanned all of the hard copies. We found that Optical Character Recognition (OCR) was unable to convert scans into digital spreadsheets with sufficient accuracy, so we entered the data manually (\cref{sec:data-entry}). We used PDF extraction tools \cite{PDFTables} to avoid manual entry of digitally-produced PDF pages.
+
+\subsection{Data entry}\label{sec:data-entry}
+
+We manually entered the information in scans into replica Excel spreadsheets (i.e., digital spreadsheets in which the layout of each spreadsheet matches the original), to facilitate comparing reproductions with their sources (\cref{fig:typewritten-eg}). The Ontario Ministry of Health data were entered before our comprehensive effort and were only partially entered as replicas (they are the sole exception). Reading scans and interpreting handwritten sources (e.g., \cref{fig:handwritten-eg}) was often a slow, and occasionally error-prone, process. Where available in these sources, we also entered reported annual and national data to support later validation against marginal totals (\cref{sec:quality-control}). When we encountered unclear numbers in the source material, we recorded our initial guesses using a predetermined format described in \aref{sec:appendix-unharmonized}, so that they could be processed systematically. These guesses were revisited and refined as needed when validation procedures, which compared sums of incidence values with marginal totals reported in both \datacronym\ sources and the PHAC portal \cite{totten2019updates}, revealed discrepancies. Scripted data preparation pipelines (\cref{sec:data-prep}) facilitated updates throughout this process. We provide details on our data entry process in \aref{sec:appendix-data-entry}.
+
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig1.pdf}
+  \caption{\textbf{Example of a typewritten source document prepared using a typewriter.} The top panel shows a scan of part of this source document, and the bottom panel shows our replica in Microsoft Excel of this same part.}
+  \label{fig:typewritten-eg}
+\end{figure}
+
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig2.pdf}
+  \caption{\textbf{Examples of handwritten data}. Most handwritten hard copies, such as the 1939 erysipelas and gonococcal data from the Ontario Ministry of Health (A), are easy to read. Others, like the 1955 poliomyelitis data from Statistics Canada (B), are difficult to read, posing challenges for digitization.}
+  \label{fig:handwritten-eg}
+\end{figure}
+
+\subsection{Data preparation}\label{sec:data-prep}
+
+We developed open-source \cite{thibault2023open} pipelines that convert replica spreadsheets (\cref{fig:typewritten-eg}) into CSV files, using common variables to combine data from different sources (details in \cref{sec:appendix-data-prep}). The focal variable is the number of new cases of a specific disease reported in a specific location over a specific time period. \datacronym\ consists of three CSV files, ranging from a minimally processed file offering maximum flexibility in data preparation to a heavily processed file prioritizing convenience; each CSV file corresponds to a stage in the data processing pipeline (\afigref{fig:appendix-pipeline}).
+
+The \term{unharmonized} file preserves the raw, digitized data, giving researchers the freedom to apply their own data preparation methods. Descriptors in the unharmonized file use original names (e.g., ``infantile paralysis'' for poliomyelitis before 1924) to minimize historical information loss \cite{torres2022harmonization}. The \term{harmonized} file removes low quality data, aggregates some municipal data to provincial levels, and adds harmonized location and disease descriptors that simplify the combination of data from different sources (e.g., poliomyelitis whenever infantile paralysis is reported). Harmonized CSV files are convenient for querying diseases, provinces, and time periods, but they cannot be used directly for analysis due to overlapping incidence values. In data science terms, the harmonized data are not \term{normalized} \cite{tidydata,cheng2024general}. For example, the harmonized data include total polio incidence alongside separate values for polio with and without paralysis (see \aref{sec:appendix-normalized} for more examples). Such overlapping data are useful for quality control (which we explain in \cref{sec:quality-control}), but data analysis requires removing overlaps to prevent double-counting cases. The normalized file does not contain overlapping incidence values, enabling aggregation without double-counting. When deciding which overlapping records to remove, we generally retain the finest resolution. Continuing our example, we would remove total polio incidence and retain separate records for polio with and without paralysis (see \aref{sec:appendix-normalized} for details on removal criteria). For convenience when computing incidence rates, we joined provincial population sizes to the normalized data. All figures in this paper are based on the normalized file. Researchers who wish to make different harmonization or normalization choices can use the upstream files (see \aref{sec:appendix-normalized} for details).
+
+\subsection{Data provenance}\label{sec:data-provenance}
+
+Each record can be traced back to the relevant original scan, replica spreadsheet, and/or script used to produce it, using information in the CSV files (\aref{sec:appendix-provenance}). We follow research data management practices by distributing DataCite \cite{datacite_metadata_schema} (version 4.3) metadata with each dataset in the archive. These metadata will make it easier to deposit future versions of \datacronym\ into a research data repository, which we plan to do.
+
+\subsection{Quality control}\label{sec:quality-control}
+
+We compared sums of incidence values with marginal totals reported both in \datacronym\ data sources and in the PHAC portal \cite{totten2019updates}. Discrepancies suggest possible data-entry or scripting errors. We investigated discrepancies and fixed those that appeared to be due to digitization error. These investigations were simplified using our open data provenance tools (\cref{sec:data-provenance}) and digitized data source replicas (\cref{fig:typewritten-eg}). We provide full detail on quality control in \aref{sec:appendix-quality-control}.
+
+\section{Results}\label{sec:results}
+
+As of \asofnow\ \datacronym\ is based on \input{n_sources}\ sources (\cref{tab:sources-table}). \aref{sec:appendix-external-links} provides information on how to access the resulting \input{unharmonized_sample_size}\ unharmonized, \input{harmonized_sample_size}\ harmonized, and \input{normalized_sample_size}\ normalized incidence values for the provinces and territories of Canada (\cref{fig:map}).
+
+\begin{table}[!ht]
+  \centering
+  \caption{\textbf{Data sources}. The Frequency column gives the shortest period over which incidence counts were reported for all diseases and locations in the source (if not all disease-location combinations have the shortest period, multiple frequencies are given). Sources that include handwritten data are indicated in the Received As column. Details on these sources are provided in \aref{sec:appendix-data-sources}.} 
+  \begin{tabular}{ll>{\raggedright\arraybackslash}p{0.11\linewidth}>{\raggedright\arraybackslash}p{0.25\linewidth}>{\raggedright\arraybackslash}p{0.2\linewidth}}  
+\input{Table1.tex}
+\end{tabular}
+\label{tab:sources-table}
+\end{table}
+
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig3.pdf}
+  \caption{\textbf{Map of Canada with provinces and territories labelled}. The map is used to show the order of provinces and territories in \cref{fig:extent-1,fig:extent-2,fig:extent-3}, and the order of provinces in the poliomyelitis example (\cref{sec:polio-results}). The map also illustrates the grouping of provinces and territories into regions that are used in the whooping cough example (\cref{sec:whooping-cough-results}). This map was prepared using the \texttt{rnaturalearth} \texttt{R} package \cite{rnaturalearth}, which utilized the following public domain shapefile: \url{https://github.com/nvkelso/natural-earth-vector/blob/e08a35c801ac729401e2de9f5eef206031e6a284/10m_cultural/ne_10m_admin_1_states_provinces.shp} associated with the terms of use stated at \url{https://www.naturalearthdata.com/about/terms-of-use/}.}
+  \label{fig:map}
+\end{figure}
+
+\newpage 
+
+\cref{fig:extent-1,fig:extent-2,fig:extent-3} list the \input{n_basal_diseases}\ diseases that appear in the normalized dataset, and highlight the time periods in which weekly, monthly, or quarterly incidence data were found in each province or territory. Within each disease, vertical placement indicates data availability for a particular province or territory, ordered approximately clockwise as indicated on the map in \cref{fig:map}. The case numbers for many of these diseases are aggregated from \input{n_diseases}\ ``sub-diseases'' (\aref{sec:appendix-harmonized}), harmonizing \input{n_historical_diseases}\ unique historical name variants. The stratification of each disease into sub-diseases varied across sources (details in \aref{sec:appendix-normalized}).
+
+\newpage
+
+\includepdf[pages=-]{Fig4.pdf}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Data availability for highly-reported diseases (top \protect\input{n-diseases-page-1}\,by total reported cases)}. Moderately- and rarely-reported diseases appear in \cref{fig:extent-2,fig:extent-3}. The diseases are ranked by the total number of cases (right panels), summed over all provinces for which data were obtained. The diseases are ordered with the largest number of cases at the top. Each incidence value, including zeros, is shown as a tiny coloured rectangle. The y-axis labels identify the disease, while the rectangle's length along the x-axis represents the temporal extent. Colours indicate reporting frequency: weekly (blue), monthly (orange), and quarterly (red). Two-weekly data are shown in green but are not included in the legend because they are too few to see without zooming. Three-quarterly data are omitted, as they are few and span most of a year (April-December 1997), providing little additional information on within-year variation. White spaces represent missing data (see \cref{sec:appendix-unharmonized} for details on the varied reasons for missing data). The vertical position within each disease denotes the province/territory, arranged roughly clockwise (east-to-west for provinces and then west-to-east for territories): NL-NS-PE-NB-QC-ON-MB-SK-AB-BC-YT-NT-NU (\cref{fig:map}). Thin horizontal patterns arise because provinces and territories differ in data availability and reporting frequency: when data are available for only some provinces, or when provinces and territories report at different time scales, the resulting variation appears as horizontal features due to the fixed top-to-bottom ordering of provinces and territories within each disease.}
+  \label{fig:extent-1}
+\end{figure}
+
+\newpage
+
+\includepdf[pages=-]{Fig5.pdf}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Data availability for moderately-reported diseases (middle \protect\input{n-diseases-page-2}\,by total reported cases)}. Highly- and rarely-reported diseases appear in \cref{fig:extent-1,fig:extent-3}. Please see the caption for \cref{fig:extent-1} for a full description of all of these plots.}
+  \label{fig:extent-2}
+\end{figure}
+
+\newpage
+
+\includepdf[pages=-]{Fig6.pdf}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Data availability for rarely reported diseases (bottom \protect\input{n-diseases-page-3}\,by total reported cases)}. Highly- and moderately-reported diseases appear in \cref{fig:extent-1,fig:extent-2}. Please see the caption for \cref{fig:extent-1} for a full description of all of these plots.}
+  \label{fig:extent-3}
+\end{figure}
+
+\newpage
+
+\subsection{Examples}\label{sec:illustrative-results}
+
+\subsubsection{Poliomyelitis cases peaked at the same time each year across all provinces}\label{sec:polio-results}
+
+Poliomyelitis incidence was strongly seasonal (upper panel, \cref{fig:polio-plot}), with national peaks consistently occurring between week \input{polio-min-week-peak} and \input{polio-max-week-peak} each year from \input{polio-min-year-peak} to \input{polio-max-year-peak}, after which the cycles disappeared. These annual cycles were synchronous across provinces, with peak incidence occurring around the same time in each (provincial panels, \cref{fig:polio-plot}). All national peaks fell between August and October, and most provincial peaks followed this pattern, with only a few outlying province-year combinations (\afigref{fig:polio-peak-month}). Identifying such spatial synchrony requires incidence data at sub-annual and sub-national scales.
+
+\newpage
+
+\begin{figure}[!ht]
+  \includegraphics[width=1\textwidth]{Fig7.pdf}
+  \caption{\textbf{Weekly poliomyelitis incidence from \protect\input{polio-min-year} to \protect\input{polio-max-year} (square root scale)}. The vertical lines do not indicate the start of each year but mark the week of peak national incidence (top panel) in years with more than 20 cases. Provincial peaks closely align with these national peaks, indicating strong spatial synchrony. This pattern could not have been detected with annual or national data. The introduction of two important vaccination programmes are shown as blue vertical dashed lines. We plot incidence rates per 100,000 to make incidence comparable across provinces and territories, and with other studies. Methods for producing this plot are described in \aref{sec:appendix-polio}.}\label{fig:polio-plot}
+\end{figure}
+
+\newpage
+
+\subsubsection{Regional differences in whooping cough incidence}\label{sec:whooping-cough-results}
+
+Aggregating provincial whooping cough data to the national level (\cref{fig:whooping-plot}) reveals a pattern consistent with previous analyses that lacked provincial data \cite{thommes2020revisiting}. One feature of this pattern is an apparent resurgence of whooping cough in the 1990s (highlighted in \cref{fig:whooping-plot}). We find that this much-discussed resurgence (e.g., \cite{thommes2020revisiting}) was not uniformly expressed across the country (\cref{fig:whooping-plot} bottom six panels), and is clearly apparent only in the territories, the prairies, and Qu\'ebec. Throughout the 1990s, yearly cases per $100,000$ peaked at \input{n_on_wc_max_90s} in Ontario, but in the territories the peak was \input{n_territories_wc_max_90s}. The original study \cite{thommes2020revisiting} did not have the sub-national data required to explore these regional differences.
+
+\newpage
+
+\begin{figure}[!ht]
+  \includegraphics[width=0.96\textwidth]{Fig8.pdf}
+\end{figure}
+
+\newpage
+
+\begin{figure}[!ht]
+  \caption{\textbf{Regional \cite{SGC2021} differences in average annual whooping cough incidence in Canada over twelve decades (square root scale)}. The national data (top panel) are very similar to the first figure in a review based on different data sources \cite{thommes2020revisiting}. The red region (1990--1999) highlights the first resurgence in national whooping cough incidence since widespread vaccination began in 1943. This plot shows that not all regions peaked in the 1990s, a pattern that could not have been detected with the national data used in the original study. Methods for producing this plot are described in \aref{sec:appendix-whooping-cough}.}
+  \label{fig:whooping-plot}
+\end{figure}
+
+\newpage
+
+\section{Discussion}\label{sec:interpretation}
+
+\datacronym\ complements existing Canadian notification data. The Public Health Agency of Canada (PHAC) provides an online portal \cite{totten2019updates} (\url{https://diseases.canada.ca/notifiable}) with annual, national incidence counts often used in retrospective analyses (e.g., \cite{payne2014hepatitis,gasmi2017emerging,lin2021relaying,lin2021influenza,thommes2020revisiting,golden2024ccdr}). However, these data lack the detail needed to study outbreak patterns, seasonality, or geographic variation. Our sub-annual, sub-national data enable research on patterns of variation within years and across provinces in Canada, and facilitate comparisons with U.S. data \cite{van2018project}. While Public Health Ontario provides online monthly data since 2012 \cite{phoquery}, our archive includes weekly Ontario data (1990--2021) and extends back before 1924, including Ontario (1903), Saskatchewan (1910), and Québec (1915). By consolidating federal and provincial sources (\aref{sec:appendix-data-sources}) into a standardized format (\aref{sec:appendix-data-prep}), we simplify integration of new data, enabling researchers to focus on analysis rather than curation.
+
+Our project parallels Project Tycho \cite{van2013contagious}, which curated weekly U.S. incidence data and whose impact is summarized by \cite{van2018project}. Unlike Tycho, we open-sourced our data preparation pipelines to enable community-driven quality improvements. These pipelines include scans of original documents, spreadsheet replicas, and scripts to convert them into tidy CSV files. To our knowledge, no other studies publish such replicas (\cref{sec:data-entry}), which help identify and correct data-entry errors. Our open-science approach enables researchers to trace incidence counts back to original sources (\aref{sec:appendix-provenance}) and improve data quality over time.
+
+A well-established feature of poliomyelitis is its seasonal pattern, with epidemics in North America typically occurring in summer. Ref. \cite{martinez2015unraveling} attributed earlier epidemics in southern U.S. states to higher transmission rates. Our data extend this latitudinal gradient northward: epidemics across Canada tended to occur later (August--October) than those in the U.S. (May--July). However, we find no substantial differences in timing among Canadian provinces from 1934 to 1960, despite large variation in climate.
+
+\subsection{Future directions}\label{sec:future}
+
+In this initial release of \datacronym, we focused on sub-annual and sub-national disease incidence, with plans to expand further. First, we will include data stratified by age, sex, and municipality for available time ranges, provinces, and diseases. Age data, for example, can be critical for estimating the impact of vaccination programmes in childhood diseases (e.g., \cite{wilkinson2022impact}). Second, we will extend the dataset's time range, disease coverage, and geographic detail as finer-scale or corrected data become available. Third, we will curate population-level information useful for epidemiological analyses, such as birth rates, mortality, vaccination, and school-term dates. Beyond expansion, we will address open questions in Canadian infectious disease history. For example, we will test whether regional differences in vaccination programmes could explain spatial variation in the size of the 1990s resurgence of whooping cough (\cref{fig:whooping-plot}). Finally, we will explore AI-powered optical character recognition, using our archive as a training dataset to enhance its efficiency and accuracy.
+
+\subsection{Logistical challenges}\label{sec:logistics}
+
+The process of assembling \datacronym\ highlighted logistical obstacles that are likely to arise in other countries seeking to build comparable historical surveillance datasets. The first challenge was locating and obtaining source material. Historical records were dispersed among federal and provincial publications issued under evolving titles and formats, with many available only as hard copies in archives or libraries. Coordinated searches, correspondence with data stewards, and formal data requests to multiple agencies and libraries were required. These challenges are described in more detail in \aref{sec:appendix-data-sources}.
+
+A second challenge was manual data entry. Optical character recognition could not accurately extract numerical tables from scans, necessitating full manual transcription. Coordinating several data enterers required standardized templates, shared conventions for unclear entries, and frequent communication to ensure consistency across spreadsheets. Looking ahead, advances in artificial intelligence may mitigate some of these difficulties, as noted in our future plans (\cref{sec:future}), although many questions remain.
+
+A third challenge was harmonizing information drawn from sources that differed widely in format and structure. Converting these diverse formats into consistent, machine-readable CSV files and resolving overlaps across locations, time scales, disease hierarchies, and data sources required careful sequencing of processing steps and version control across multiple repositories. These challenges are detailed in \aref{sec:appendix-data-prep}.
+
+Finally, quality control involved iterative cross-checks across diseases, jurisdictions, and time scales. Addressing discrepancies meant revisiting earlier stages of data entry and processing, emphasizing the importance of reproducible pipelines. These challenges illustrate the logistical scale of constructing a comprehensive historical surveillance archive. By documenting our workflows and tools openly, we have worked for \datacronym\ to serve as both a resource and a practical starting point for researchers undertaking similar digitization efforts elsewhere.
+
+\subsection{Limitations}\label{sec:limitations}
+
+Under-reporting is a known limitation of surveillance data \cite{van2013contagious,gibbons2014measuring}. Correcting for it requires disease- and context-specific methods that rely on supplementary data (e.g., serological surveys, case-fatality ratios, demography) and modelling \cite{mangen2011current}. Given the number of diseases and years covered, such corrections are beyond our scope. Our contribution is to make data available in a form that supports future work, including efforts to address under-reporting. As one step in that direction, we distinguish true zero case counts from data that were unreported, based on information available in the original sources (see \aref{sec:appendix-unharmonized}).
+
+In addition to under-reporting, two other factors complicate the interpretation of these incidence data: evolving sub-disease hierarchies and inconsistent time scales. First, changes in how diseases are classified and reported over time affect comparability, as the level of aggregation can vary year to year (e.g., the normalized dataset includes 37 meningitis sub-diseases, with 1--15 reported in any given year; \afigref{fig:appendix-meningitis}). Second, variation in reporting frequency (e.g., weekly, monthly, quarterly; \cref{fig:extent-1,fig:extent-2,fig:extent-3}) hinders the construction of evenly spaced time series, which are often needed for modeling and visualization.
+
+Historical gaps in \datacronym\ persist due to surveillance program changes (e.g., chickenpox was not notifiable from 1959--1985) and incomplete source coverage, particularly outside Québec, Ontario, and Saskatchewan before 1924. These gaps range from missing weeks (e.g., lost book pages) to illegible handwritten records (\cref{sec:quality-control}). Although transcription and coding errors cannot be ruled out, we compared reported subtotals with their marginal totals and corrected all identified discrepancies for our primary example diseases (whooping cough, poliomyelitis). By releasing open data pipelines, we aim to enable similar checks across all diseases and to support collective efforts to improve the completeness and reliability of \datacronym\ over time (details in \aref{sec:appendix-quality-control}).
+
+\subsection{Conclusion}
+
+More than a century of infectious disease surveillance in Canada has produced a valuable record of epidemic patterns that has been largely unexploited, but can now be easily accessed. Comprehensive sub-annual and sub-national Canadian infectious disease incidence data have previously been unavailable. Similar data from other countries have been critical to establishing the foundations of epidemiological modelling and continue to push the field forward (e.g., \cite{bartlett1960critical,london1973recurrent,anderson1982directly,fine1982measles,grenfell1985pertussis,AndeMay91,Tien+11,KrylEarn20,Earn+20}).
+
+\datacronym\ makes it possible to study variation in disease incidence within years and across provinces, with applications ranging from infectious disease research to broader interdisciplinary work. For example, it can be used to assess how incidence in Canada relates to socio-economic factors such as urbanization and wealth inequality. The dataset also supports public health planning by situating recent outbreaks and epidemics within their historical context.
+
+In principle, it should be straightforward to keep the archive up to date, but doing so will require the cooperation of provincial and territorial public health agencies, which have released \emph{less} data publicly since strictly digital data collection began in the 1990s. We contacted all these agencies but were able to obtain recent weekly data from only two provinces. While we recognize that agencies may face practical constraints, such as the staff time required to prepare and maintain public releases, we encourage Canadian governments to support routine public access to weekly, aggregated counts of infectious disease notifications.
+
+\section{Supporting Information}
+
+\paragraph*{S1 Appendix}\label{S1_Appendix}
+{\bf Methodological Details.} This supporting information details the historical and methodological framework for compiling and preparing Canadian notifiable infectious disease incidence data. It explains the sources and evolution of the Canadian Notifiable Disease Surveillance System (CNDSS), including federal and provincial publications, and describes the process of locating, digitizing, and cleaning these historical records. Data entry procedures are described along with the individuals who did the work. Quality control procedures are described, including internal consistency checks across time scales, locations, and disease hierarchies, as well as comparisons among data sources. Finally, the document outlines specific analytical methods for diseases like polio and whooping cough. {\bf Note to reviewers:} This appendix appears after the main text in this document, but if accepted it will be a separate document.
+
+
+\section*{Acknowledgements}
+
+We are deeply thankful to Alberta Health and Public Health Ontario for providing us with recent weekly incidence data. We are grateful for support from the Natural Sciences and Engineering Research Council of Canada (NSERC) via an Emerging Infectious Disease Modelling (EIDM) grant to the Canadian Network for Modelling Infectious Diseases (\href{https://canmod.net}{CANMOD}). DJDE, BMB and JD were supported by NSERC Discovery grants. GM was supported by an NSERC Undergraduate Student Research Award (USRA) held at the McMaster University Department of Mathematics and Statistics. Research assistants Jen Freeman, Frank Jin, Ronald Jin, and Steven Lee wrote code that we used during this project. Research assistants Jeanne Lin, Saul Widrich, Qinxian Zhu, Claire Lees, and Julia Maja entered some of the data. Research assistants Maya Earn, Arielle Earn, and Elizabeth O'Meara found, organized, and scanned source documents.  We appreciate the enthusiastic encouragement we received from Caroline Colijn, Michael Li and many other CANMOD colleagues.
+
+\bibliography{bibliography}
+\bibliographystyle{vancouver}
+
+\newpage
+
+\appendix
+\setcounter{page}{1}
+\setcounter{figure}{0}
+\appendix
+
+\renewcommand{\thepage}{S\arabic{page}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thesection}{S\arabic{section}}
+
+\centerline{\Huge\bfseries SUPPORTING INFORMATION}
+
+\section{Methodological Details}\label{sec:appendix-methods}
+
+\subsection{Data Sources}\label{sec:appendix-data-sources}
+
+In 1924, the Dominion Bureau of Statistics, now Statistics Canada, began collecting communicable disease incidence data.
+
+\begin{quote}
+The main objectives of this system are to provide a mechanism for monitoring the health of the population by identifying and responding to changes in reporting trends of specific diseases and to provide information that can contribute to the development of health policy and the planning of care, prevention, and control programs. \cite{sockett1996communicable}
+\end{quote}
+
+In 1988 this initiative was transferred to the Canadian Laboratory Centre for Disease Control and persists today under the administration of the Public Health Agency of Canada (PHAC), as the Canadian Notifiable Disease Surveillance System (CNDSS) \cite{totten2019updates}. Data for the CNDSS are provided by provincial and territorial governments to monitor diseases of public health concern \cite{totten2019updates}. Prior to the onset of this federal initiative in 1924, several provinces were already collecting such data without reporting it to the federal government.
+
+Our group's search for historical Canadian infectious disease notification data began in 2000. Initially, D.J.D. Earn acquired handwritten weekly counts for Ontario, covering five decades (1939--1989), from the Ontario Ministry of Health (\cref{tab:sources-table}). A significant breakthrough occurred during a visit to the chief medical officer of health in Manitoba, where he discovered a single page of notifications submitted to the Dominion Bureau of Statistics. He photocopied this document and sent it to Statistics Canada, as it was the first evidence that the data tables we were seeking existed.
+
+In 2002 and later, D.J.D. Earn engaged in extensive communications with Statistics Canada via telephone and email. As a result, they provided photocopies of handwritten weekly and monthly notification spreadsheets from 1924--1955 that they had located in their archives. At the time, our resources were insufficient to digitize and clean all of these data. However, we did present analyses of a few disease time series in publications (e.g., \cite{BaucEarn03}). Additionally, we located more published CNDSS data from 1956--2000 in University Libraries and from Statistics Canada. During this historical period, the publication of data transitioned from weekly to monthly and eventually to quarterly. In 2021, with funding from the Canadian Network for Modelling Infectious Diseases (CANMOD), D.J.D. Earn initiated a systematic effort to complete this 2+ decade project to locate, digitize, clean, and distribute all available CNDSS data.
+
+The following paragraphs describe the sources of data, including both federal and provincial government compilations. Throughout the project, D.J.D. Earn, G. MacKinnon, S. Manzin, C. Shi, A. Earn, E. O'Meara, and S.C. Walker contributed to identifying and locating these sources.
+
+\paragraph*{Federal government compilations}
+
+The CNDSS data have been published using different titles that have changed over time, many of which are (at the time of writing) difficult or impossible to find using Google without physically going to libraries and archives. Ref. \cite{summaryNotifiable1954} provides annual communicable disease incidence data by province from 1924 to 1954,  but it does not provide a list of the titles used to publish these data. We have been able to find some of these titles, but not all of them. The titles used by Statistics Canada and Health and Welfare Canada to publish CNDSS data changed over time, and we have been able to find some of these titles, but not all of them. 
+
+\begin{description}
+\item[1924-1959] During this period, the Dominion Bureau of Statistics compiled provincial communicable disease incidence data. Photocopies that we obtained from Statistics Canada are evidence of these compilations. In 1954, the Bureau published annual incidence data from 1924-1952 \cite{summaryNotifiable1954}. This report states that the Dominion Bureau of Statistics began publishing incidence data in 1952 under the title ``Summary of Cases of Notifiable Diseases in Canada''. This report also states that the Dominion Bureau of Statistics compiled ``a restricted monthly release'' of incidence data from 1924--1932 and that in 1933 this became a ``printed weekly report.'' The  phrase ``weekly communicable disease report'' was used by Ref. \cite{summaryNotifiable1954}, suggesting that this was the name of the ``printed weekly report''. Again we were unable to find these releases, reports, or publications on the internet, but we have photocopies of data that were presumably used to produce them.
+\item[1959--1974] From 1959-01-24, the Dominion Bureau of Statistics published weekly provincial CNDSS data under the title ``Notifiable Diseases -- Weekly Summary'' until they were renamed Statistics Canada on May 1st 1971. Statistics Canada continued using this name until 1974. Many of these reports from 1959 to 1974 can be found in the Research \& Collections Resource Facility at the University of Alberta.
+\item[1975--1976] Statistics Canada and Health and Welfare Canada jointly published weekly provincial CNDSS data using the title ``Notifiable Diseases Weekly Summary Provisional Report'' for less than one year from 1975-04-26 to 1976-01-03.
+\item[1976--1978] During this period, Health and Welfare Canada published weekly provincial CNDSS data using the previous title ``Notifiable Diseases -- Weekly Summary''.
+\item[1979--1989] During this period, Statistics Canada and Health and Welfare Canada jointly published 4-weekly provincial CNDSS data using the title ``Notifiable Diseases Summary''.  At the time of writing, we were not able to use Google to find a digitized copy of CNDSS data for the first quarter of 1979. However, the Canada Diseases Weekly Reports (CDWR) reproduced CNDSS data using this title starting with the four-weekly period ending 1979-04-21. The CDWR continued to reproduce CNDSS data using this title until 1991, but they did not do so for every four-weekly period.  We were able to obtain data for more of these four-weekly periods directly from Statistics Canada, but we were not able to obtain all of them.
+\item[1990--2006] From 1990--1992, Health and Welfare Canada published monthly provincial data under the title ``Notifiable Diseases Summary'' and continued to publish quarterly provincial data under the same title until the last quarter of 2003 at which time the Public Health Agency of Canada took over until 2006. Many of these publications are reproduced in the Canada Communicable Disease Report (\href{https://www.canada.ca/en/public-health/services/reports-publications/canada-communicable-disease-report-ccdr.html}{CCDR}).
+\item[2007--present] Unfortunately, we were unable to find any sub-annual and sub-national data source covering all provinces after 2007. Since 2001, the Public Health Agency of Canada (PHAC) has maintained a web portal \cite{totten2019updates} that provides annual, national incidence.
+\end{description}
+
+\paragraph*{Provincial government compilations}
+
+Provincial public health agencies have published data directly, and many of these publications predate the federal programme that began in 1924. These sources also varied in the titles under which they published. The following is a non-exhaustive list of titles that have been used by provincial health agencies to publish monthly disease incidence data for their province.
+\begin{description}
+  \item[Ontario, 1903--1905] ``The Sanitary Journal of the Provincial Board of Health of Ontario''.
+  \item[Ontario, 1906--1924] ``Annual Report of the Provincial Board of Health''.
+  \item[Ontario, 1925--1947] ``Annual Report of the Department of Health''.
+  \item[Saskatchewan, 1910] ``Annual report of the Bureau of Public Health for the Province of Saskatchewan''.
+  \item[Saskatchewan, 1921--1922] ``Annual report of the Bureau of Public Health of the Province of Saskatchewan''.
+  \item[Saskatchewan, 1923--1926] ``Annual report of the Department of Public Health of the Province of Saskatchewan''.
+  \item[Saskatchewan, 1927] ``Annual report of the Department of Public Health and the Vital Statistics report of the Province of Saskatchewan'' .
+  \item[Québec, 1915-1922] ``Rapport annuel du Conseil supérieur d'hygiène de la province de Québec = Annual report of the Superior Board of Health of the Province of Quebec''.
+  \item[Québec, 1923-1934] ``Rapport annuel du Service provincial d'hygiène de la province de Québec = Annual report of the Provincial Bureau of Health of the Province of Quebec''.
+  \item[Manitoba, 2004-2017] ``Manitoba Monthly Surveillance Unit Report'' -- available online (at the time of writing) here: \url{https://www.gov.mb.ca/health/publichealth/surveillance/episummary/archive.html}. 
+\end{description}
+
+\paragraph*{Provincial and territorial government data requests}
+
+In 2021, we began reaching out to provincial and territorial public health agencies for more recent sub-annual data. Although we corresponded via email with all such agencies, only Public Health Ontario and Alberta Health provided us with recent data. Both agencies provided us with weekly data. This work was carried out by G. MacKinnon and S. Manzin, under the supervision of S.C. Walker.
+
+\subsection{Data Entry}\label{sec:appendix-data-entry}
+
+Data were manually transcribed from scanned reports into standardized Excel spreadsheets following project digitization guidelines:
+
+\begin{quote}
+\url{https://github.com/canmod/candid/blob/main/digitization-guidelines.md}
+\end{quote}
+
+The core principle of this document is that digitized spreadsheets should mirror the structure and appearance of the original source documents closely enough for easy comparison, while allowing flexibility when an exact match is impractical. In practice, maintaining consistency across data enterers required more than simply following this principle. Perfect replication was sometimes unrealistic because capturing every small detail demanded more time and effort than available, requiring decisions about which details were worth the effort. In other cases, readability was intentionally improved through small departures from the source, such as alternating row shading. At times, Excel itself could not reproduce the layout of the original--for example, when a number appeared between two table cells--necessitating collective decisions about how to represent such cases in a spreadsheet. The guidelines therefore serve as a shared reference to help data enterers make similar judgments in these situations.
+
+Regular meetings among research assistants were used to resolve ambiguities and update the document. The main team of data enterers included S. Manzin, G. MacKinnon, C. Shi, J. Lin, Q. Zhu, C. Corradi, S. Widrich, J. Maja, and C. Lees. Manzin, MacKinnon, and Shi entered the largest volume of data, with Lees contributing substantial work prior to the start of the systematic digitization effort in 2021. Their work included manual entry from scanned tables into spreadsheets, checking and correcting data entry errors, and scanning hard-copy source documents. Each spreadsheet contains the name of the data enterer in a dedicated cell.
+
+The guideline document is organized around reusable Excel templates that promote consistency across similar sources and formats; these templates contained table structures with row and column headers but no data values, allowing them to serve as standardized starting points for digitizing sources with recurring formats. Some sources were digitized quickly by a single assistant, making separate documentation unnecessary because the resulting spreadsheets themselves defined the format; as a result, not all data sources are represented in the document.
+
+\subsection{External Links}\label{sec:appendix-external-links}
+
+Download links to the datasets described in this paper, as well as others from our broader Canadian historical epidemiological data digitization project, can be found at the following web page:
+\begin{quote}
+\url{https://github.com/canmod/iidda/blob/main/README.md}
+\end{quote}
+In addition to download links, which page covers the following additional technical information:
+
+\begin{itemize}
+  \item \textbf{Data Dictionary}
+  \item \textbf{Data Harmonization}
+  \item \textbf{Reproducing IIDDA Datasets}, including:
+    \begin{itemize}
+      \item Running natively
+      \item Running in a Docker container
+      \item Running interactively
+      \item Dependency management
+      \item Requirements
+    \end{itemize}
+  \item \textbf{Project Structure}, including:
+    \begin{itemize}
+      \item Data sources and pipelines (source data and source code)
+      \item Derived data and tidy datasets
+      \item Identifiers
+      \item Metadata
+      \item Lookup tables
+    \end{itemize}
+  \item \textbf{Contributions}, including:
+    \begin{itemize}
+      \item Contributing source data and pipelines
+      \item Contributing fixes to data and pipelines
+      \item Contributing to IIDDA project development
+    \end{itemize}
+\end{itemize}
+
+We have also written a small package for reading the data directly into R. An introduction to this package can be found here:
+\begin{quote}
+\url{https://canmod.github.io/iidda-tools/iidda.api/articles/Quickstart}
+\end{quote}
+This \texttt{iidda.api} package is part of a suite of packages including tools that are used in data preparation pipelines. The source code for this suite is available here:
+\begin{quote}
+\url{https://github.com/canmod/iidda-tools}
+\end{quote}
+
+All the code to produce the figures and statistics in this paper are available at:
+\begin{quote}
+\url{https://github.com/canmod/candid}
+\end{quote}
+
+\subsection{Data preparation pipelines}\label{sec:appendix-data-prep}
+
+Each data preparation pipeline followed one of the paths outlined in \cref{fig:appendix-pipeline}. Data sources were provided as hard copies, digitally produced PDF files, or digital spreadsheets. Digital spreadsheets were particularly advantageous because they enabled us to directly script the production of CSV files. When data were not in spreadsheet format, conversion was necessary before scripting could begin. For digitally produced PDF files, we tried to use automated tools like PDFTables (\url{https://pdftables.com/}) to convert them into spreadsheets. Hard copies, however, always required scanning followed by manual data-entry into spreadsheets. We were unable to find a viable optical character recognition (OCR) approach to avoid manual data-entry. However, in the years since we began this systematic effort to digitize Canadian incidence data there have been tremendous advances in artificial intelligence (AI), and so this situation may have changed. In future work on digitization we plan to replicate parts of this work using OCR, to test it as an efficiency tool in this area.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{pipeline-overview.jpg}
+  \end{center}
+  \caption{Data preparation pipeline overview. All products begin with data sources (red), which provide hard copies, digital spreadsheets, or digitally produced PDFs. Processing steps are classified as manual (e.g., data-entry), automated (e.g., PDF table extraction tools), or programmatic (e.g., customized R script).}\label{fig:appendix-pipeline}
+\end{figure}
+
+All \datacronym\ preparation pipelines are available at:
+\begin{quote}
+  \url{https://github.com/canmod/iidda/tree/main/pipelines}
+\end{quote}
+The main scripts for producing each of the three datasets (unharmonized, harmonized, and normalized) discussed in this article are available at:
+\begin{quote}
+\url{https://github.com/canmod/iidda/tree/main/pipelines/canmod-compilations/prep-scripts}
+\end{quote}
+These scripts depend on outputs produced by other pipelines that generate data from specific sources. Instructions on how to reproduce all of these outputs are provided in the \texttt{README.md} file on this GitHub repository:
+\begin{quote}
+  \url{https://github.com/canmod/iidda}
+\end{quote}
+
+The data preparation pipelines were written by G. MacKinnon, S. Manzin, F. Jin, and S.C. Walker. These individuals, in addition to S. Lee, R. Jin, M. Roswell, and J. Freeman, also wrote software packages that were used in these pipelines. The reason for separating pipelines from packages is that pipelines are specific to this project, whereas packages are designed to be reusable in other digitization projects. The packages used in these pipelines are available at:
+\begin{quote}
+\url{https://github.com/canmod/iidda-tools}
+\end{quote}
+
+\subsubsection{Preparing Unharmonized CSV Files}\label{sec:appendix-unharmonized}
+
+We developed one open-source R script for each spreadsheet that converts it into a tidy CSV file \cite{tidydata}. These R scripts used the \texttt{unpivotr} package to convert the wide-format data used in historical documents to long-format data that make it easier to manipulate using standard tools \cite{tidydata}. Long-format data also make it easier to combine data from different sources into a single data set, by ensuring they each consist of fields from the same standardized data dictionary. All of the resulting CSV files have been collected into a single file that we label \emph{unharmonized} because it contains unharmonized historical disease and place names.
+
+These unharmonized data also include information on why certain incidence values are not available, when we could determine the reason from the sources. In the column containing numbers of cases, \texttt{cases\_this\_period}, we allowed the following types of values:
+%% 
+\begin{itemize}
+\item Non-missing numeric case numbers (non-negative integers).
+\item One of the following strings explaining why the case numbers are missing\footnote{Typically these strings were taken as is from the source, but in many instances before 1924 we had to make an educated guess about the reason why particular records were missing.}: 
+  %% 
+  \begin{itemize}
+    \item The phrase `\texttt{Not available}', for unknown reasons.
+    \item The phrase `\texttt{Not reported}', for unknown reasons.
+    \item The phrase `\texttt{Not reportable}', presumably indicating that the jurisdiction was not required to report these numbers.
+    \item The word `\texttt{Missing}', typically indicating missing pages in the middle of a multi-page table.
+    \item The word `\texttt{Unclear}', meaning that the value is missing from \datacronym\ because it is not legible.
+    \item The word `\texttt{Unclear}', with a special string format,
+    \begin{quote}
+      \tt
+      \{guess\_1\} - \{guess\_2\} - \dots\ - \{guess\_n\} (unclear) 
+    \end{quote}
+    (e.g., `\texttt{36-23-59 (unclear)}'), meaning that the value is missing because the number is difficult to read but we have one or more guesses. In the harmonized datasets (\cref{sec:appendix-harmonized}) we use the first (i.e., best) guess.
+    \item Phrases of the format `\texttt{Wrong but clear total in this cell is \{value\}}', meaning that this cell should contain a marginal total (e.g., annual total), and that the value is clearly written, but is not the correct total obtained by summing up the component values (e.g., weekly counts).
+  \end{itemize}
+\end{itemize}
+
+\noindent This list of values for recording missing and unclear data is also described in our living document of data entry processes, introduced in \aref{sec:appendix-data-entry}.
+
+\subsubsection{Preparing Harmonized CSV Files}\label{sec:appendix-harmonized}
+
+We developed one open-source R script for each data source that joins the unharmonized data with harmonized disease and place names. This was achieved by creating lookup tables containing all historical names, and then adding columns for harmonized names. Links to these lookup tables are available at:
+\begin{quote}
+\url{https://github.com/canmod/iidda/blob/main/README.md#canmod-digitization-project}
+\end{quote}
+
+Because sources sometimes reported diseases hierarchically, our harmonized disease names were provided in two columns: \texttt{disease}, giving the name of the disease being reported, and \texttt{nesting\_disease}, optionally giving the name of another disease within which the \texttt{disease} is nested. We refer to the values in these \texttt{disease} and \texttt{nesting\_disease} columns collectively as \term{disease names}. These disease names are organized into hierarchies, such that most disease names are nested within another disease name (e.g., hepatitis-A is nested within hepatitis-A-B). We refer to disease names that are not nested within any other disease name as \term{basal diseases}. These basal diseases are plotted in \cref{fig:extent-1,fig:extent-2,fig:extent-3} of the main text. For a given combination of location and time period, all disease names at or below a specific basal disease in the hierarchy are referred to as its \term{sub-diseases}.
+
+In addition to joining harmonized names, the harmonization scripts also apply the following changes:
+%%
+\begin{itemize}
+\item Apply fixes to dates and locations that were obviously entered incorrectly in the original source documents (e.g., one whooping cough record from 1943 was for a week ending on a Sunday, while all other data from the same source were for weeks ending on a Saturday).
+\item Aggregate data that were stratified by age or city.
+\item Replace alternative characters for reporting zero cases with a literal \texttt{0} (e.g., often a dash was used).
+\item Remove records containing missing values or text strings indicating the type of missing value (e.g., `\texttt{Unclear}', `\texttt{Missing}').
+\end{itemize}
+%%
+These fixes add convenience at the expense of removing information contained in the original source, but this information remains accessible in the unharmonized data \cref{sec:appendix-unharmonized}.
+
+We collected all of the resulting harmonized CSV files into a single file that we label \emph{harmonized}.
+
+\subsubsection{Preparing the Normalized CSV File}\label{sec:appendix-normalized}
+
+We developed an open-source R script to remove overlapping data and to add data that are implied but not explicitly provided by the original source documents. Our goal was to ensure that each apparently reported case is represented by a single incidence value in the resulting CSV file. We refer to the resulting file as \emph{normalized} aligning with the concept that normalized databases represent each `fact' only once \cite{tidydata}.
+
+There are five sources of overlap that could cause cases to be counted more than once:
+\begin{itemize}
+  \item Locations (e.g., provincial data being reported along with national data)
+  \item Data sources (e.g., weekly data for Ontario between 1939--1978 being reported by both Statistics Canada and the Ontario Ministry of Health)
+  \item Time periods (e.g., weekly data being reported along with monthly data)
+  \item Disease hierarchies (e.g., polio with and without paralysis being reported along with total polio)
+  \item Mixtures of the previous sources of overlap (e.g., some provinces have only monthly data, while others have only weekly data.)
+\end{itemize}
+
+In addition to removing overlapping historical records, we also add records that are implied by the information in the sources. There are two types of implied information in the harmonized data that we have made explicit in the normalized data:
+\begin{itemize}
+  \item Unaccounted cases that are detected when the reported number of cases for a disease is greater than the total over its sub-diseases.
+  \item Missing data at finer time-scales (e.g., weekly, monthly) can be assumed to be zero if zeros are reported at a coarser time-scale (e.g., yearly data) that temporally bound the finer scale.
+\end{itemize}
+
+The \datacronym\ archive curates data from a wide variety of sources (\cref{tab:sources-table}) and diseases, each with different biases and quality issues. It is therefore impossible to produce a perfectly normalized dataset, nor is it our goal to do so here. Instead we aim (1) to make reasonable choices so that the analyses in this paper respect basic principles of consistency (e.g., each case is counted at most once), (2) to set up a data processing pipeline that allows sustained work to improve the quality of the normalization process, and (3) to make the complete and un-normalized data easy to access so that others with expertise in a particular area can make improved normalization choices. 
+
+In the remainder of this section, we describe the normalization steps that we take to produce our posted normalized files. Users are free to modify these steps by modifying the scripts and other files these scripts depend on (see \cref{sec:appendix-provenance} for information on how to find these scripts and files).
+
+\paragraph{Add unaccounted cases:} Sometimes the total for a \texttt{nesting\_disease} is reported along with some, but not all, of its sub-diseases. In these instances, after having ruled out other known data quality issues, we produced records with incidence counts given by the associated reported total minus the sum of the reported sub-diseases. These incidence values can be identified in the normalized dataset by a value in the \texttt{disease} column of the form \texttt{nesting-disease\_unaccounted}, and with \texttt{derived-unaccounted} in the \texttt{record\_origin} column. These sums were computed by grouping by time-period, province, data source ID, and \texttt{nesting\_disease}.
+
+\paragraph{Join population data:} The estimated provincial population for each incidence value was joined to the normalized dataset. As a result, population numbers are repeated in the dataset because incidence values for different diseases are linked to the same population size within a specific period and province. While this repetition technically violates our normalization principle, the added convenience justifies this step. The \texttt{population} column provides linearly interpolated estimates of the intercensal populations for each province at the mid-point of each period, using census-derived data from \cite{canada1925sixth,statistics1973population,statcan2021population}.
+
+\paragraph{Resolving overlapping locations:} Filtering out all data for the entire country easily solves this source of overlap.
+
+\paragraph{Compute implied zeros:} In some instances, there are zeros reported at a coarse time-scale (i.e., for a year), but the data at a finer timescale (weekly/monthly) for the same disease and location is empty or not available. We replaced weekly data that were missing and/or not available in national data sources with zeros when they were implied by a zero at a coarser timescale for the same disease and location. These incidence values can be identified in the normalized dataset by a value of \texttt{derived-implied-zeros} in the \texttt{record\_origin} column. These implied zeros were given lower priority than other weekly data when resolving overlap, as we describe next.
+
+\paragraph{Resolving overlapping data sources and time-scales:} We generally prioritize national data sources that report for all provinces (e.g., Statistics Canada) over provincial data sources that report for a single province (e.g., Saskatchewan Bureau of Public Health). We always prioritize finer time-scales (e.g., weekly) over coarser ones (e.g., quarterly). For example, if monthly data from a national source overlaps with weekly data from a provincial source, we will choose the weekly provincial data.
+
+We handle data source and time-scale overlap sequentially, starting with an empty dataset and adding records from a dataset produced by applying the previous normalization processes to the harmonized data. At each step in this sequence, we consider new candidate records and only add those that do not overlap temporally with the existing ones. Being added first therefore indicates a higher priority:
+\begin{enumerate}
+  \item All weekly data from national sources.
+  \item Non-overlapping weekly data from provincial sources.
+  \item Non-overlapping two-weekly data from national sources.
+  \item Non-overlapping two-weekly data from provincial sources.
+  \item Non-overlapping weekly implied zeros from national sources.
+  \item Non-overlapping monthly data from national sources.
+  \item Non-overlapping monthly data from provincial sources.
+  \item Non-overlapping quarterly data from national sources.
+\end{enumerate}
+
+For any time period and province, we have at most two data sources: one from a federal organization (e.g., Statistics Canada) and one from a provincial organization (e.g., Saskatchewan Bureau of Public Health). To address such overlap when it occurs, we prefer national sources to those from provincial sources. This choice has the advantage of being easy to apply and also has a better chance of producing provincial data streams that are comparable because we can inherit the choices that the federal organization made when publishing data from different provinces.
+
+If the two sources produced identical results then this choice would be irrelevant. Although there are periods for which national and provincial sources reported identical counts, this is not typically the case. \cref{fig:appendix-statcanmoh} gives an example comparing 37 years of weekly whooping cough data in Ontario as reported by Statistics Canada and the Ontario Ministry of Health. This figure shows that until 1970 the two agencies were reporting virtually identical numbers, with the occasional deviation. In contrast, there are deviations consistently from 1970 to 1977, although the qualitative pattern is still similar.
+
+\begin{figure}
+  \includegraphics[width=0.95\textwidth]{agency-comparisons/whooping-cough-ontario.png}
+\caption{Comparing reported Ontario whooping cough incidence from Statistics Canada with the Ontario Ministry of Health. The difference between the two sources is given on the bottom panel. Additional comparisons among similar data from different agencies can be found on the website for the paper: \url{https://github.com/canmod/candid/tree/main/output/agency-comparisons}}\label{fig:appendix-statcanmoh}
+\end{figure}
+
+\paragraph{Resolve overlap caused by disease hierarchies:} To address how this type of overlap is addressed, it is necessary to further define terminology related to disease hierarchies, building on the concepts introduced in \cref{sec:appendix-harmonized}. The \term{global hierarchy} of a basal disease includes all sub-diseases that appear at least once in the harmonized dataset, while the \term{local hierarchy} is specific to a particular location and time period. Some of these global hierarchies are simple (e.g., whooping cough has no sub-diseases at all) whereas others are complex (e.g., meningitis has 37 sub-diseases in the global hierarchy) with local hierarchies changing over time. 
+
+We will dig into the meningitis hierarchy a little to give a sense of the complexity. The harmonized dataset contains 33 different local hierarchies of meningitis. \cref{fig:appendix-meningitis-early} to \cref{fig:appendix-meningitis-man} give the meningitis global hierarchy, with each figure highlighting the local-hierarchy associated with a specific set of locations and times. From 1921 to 1967 Statistics Canada reported a total meningitis count without any sub-diseases (\cref{fig:appendix-meningitis-early}). The sources give no indication of what kind of meningitis is being reported, possibly because it was not known. From 1969--1978 only viral meningitis was reported and this was stratified by coxsackie, echo, and virus-unspecified (\cref{fig:appendix-meningitis-70s}). Even if totals for meningitis-viral or meningitis were given in these sources, they were excluded from the normalized data to avoid overlap. From 1979 to 1985 the collection of sub-diseases changed completely to report only meningitis associated with encephalitis (both viral and bacterial, \cref{fig:appendix-meningitis-80s}). Collections of sub-diseases from provincial data sources could sometimes be quite complex (e.g., \cref{fig:appendix-meningitis-man}). Even in this complex case, there is no overlap in observed diseases in the normalized data.
+
+\begin{figure}
+\begin{subfigure}{1\textwidth}
+  \includegraphics[width=0.99\textwidth]{disease-hierarchies/meningitis_33.png}
+  \caption{Global meningitis disease hierarchy highlighting in blue a particular local hierarchy of reported sub-diseases between 1921 and 1967. In this local hierarchy, the only reported sub-disease is the basal disease itself. Full caption below.}\label{fig:appendix-meningitis-early}
+\end{subfigure}
+\end{figure}
+\begin{figure}\ContinuedFloat
+\begin{subfigure}{1\textwidth}
+  \includegraphics[width=0.99\textwidth]{disease-hierarchies/meningitis_24.png}
+  \caption{Global meningitis disease hierarchy highlighting in blue a particular local hierarchy of reported sub-diseases between 1968 and 1978. Full caption below.}\label{fig:appendix-meningitis-70s}
+\end{subfigure}
+\end{figure}
+\begin{figure}\ContinuedFloat
+\begin{subfigure}{1\textwidth}
+  \includegraphics[width=0.99\textwidth]{disease-hierarchies/meningitis_7.png}
+  \caption{Global meningitis disease hierarchy highlighting in blue a particular local hierarchy of reported sub-diseases between 1979 and 1985. Full caption below.}\label{fig:appendix-meningitis-80s}
+\end{subfigure}
+\end{figure}
+\begin{figure}\ContinuedFloat
+\begin{subfigure}{1\textwidth}
+  \includegraphics[width=0.99\textwidth]{disease-hierarchies/meningitis_1.png}
+  \caption{Global meningitis disease hierarchy highlighting the sub-diseases reported by Public Health Manitoba in the date ranges given. Full caption below.}\label{fig:appendix-meningitis-man}
+\end{subfigure}
+\end{figure}
+\begin{figure}\ContinuedFloat
+  \caption{Global hierarchy of meningitis diseases. Each sub-figure corresponds to a specific date and location range, with a local hierarchy of sub-diseases for that range highlighted in blue and others in red. Disease names starting with ``ex'' indicate counts that exclude certain disease types, abbreviated in the figure. Full disease names are constructed by concatenating node names along the hierarchy with dashes (e.g., meningitis-bacterial-haemophilus-influenza). All hierarchies for meningitis can be found on the website for the paper: \url{https://github.com/canmod/candid/tree/main/output/disease-hierarchies}}\label{fig:appendix-meningitis}
+\end{figure}
+
+The above examples illustrate that we addressed overlap caused by disease hierarchies by keeping only the most detailed sub-diseases of each basal disease, and setting the nesting diseases of these sub-diseases to be the basal disease. Intermediate nesting disease counts were then removed, keeping only the finest stratification of each basal disease reported in a given time period and location. For example, the stratification of meningitis illustrated in \cref{fig:appendix-meningitis-70s} came from a data source (Statistics Canada) that also reported a total for viral meningitis (historically called aseptic meningitis), but this total was removed in the normalization process and so the viral node is coloured red to indicate that this sub-disease cannot be observed in the normalized data. For another example, Public Health Ontario stratified hepatitis B by acute and chronic sub-diseases (\cref{fig:appendix-hep}, top) whereas Statistics Canada and other provincial agencies did not (\cref{fig:appendix-hep}, bottom).
+
+\begin{figure}
+  \begin{subfigure}{1\textwidth}  
+  \includegraphics[width=0.99\textwidth]{disease-hierarchies/hepatitis-A-B_3.png}
+\end{subfigure}
+\begin{subfigure}{1\textwidth}
+  \includegraphics[width=0.99\textwidth]{disease-hierarchies/hepatitis-A-B_4.png}
+\end{subfigure}
+\caption{Global hepatitis A and B disease hierarchy, with two panels highlighting different local hierarchies in blue. In the top panel hepatitis B is stratified by acute and chronic sub-diseases, but in the bottom panel hepatitis B is not stratified. See \cref{fig:appendix-meningitis} for interpretation details. All hierarchies for hepatitis can be found on the website for the paper: \url{https://github.com/canmod/candid/tree/main/output/disease-hierarchies}}\label{fig:appendix-hep}
+\end{figure}
+
+\FloatBarrier
+
+\subsubsection{Data Provenance}\label{sec:appendix-provenance}
+
+The harmonized and normalized data both contain the following columns with unique identifiers to resources used to produce each record:
+%%
+\begin{itemize}
+  \item \texttt{original\_dataset\_id}: Uniquely identifies the unharmonized dataset containing each record.
+  \item \texttt{digitization\_id}: Uniquely identifies the digitization (typically an Excel file) containing the data for each record.
+  \item \texttt{scan\_id}: Uniquely identifies the scan of the original document containing each record.
+\end{itemize}
+%%
+Records that were implied from associated data (see \cref{sec:appendix-normalized}), as opposed to explicitly reported, do not have entries in the first two of these columns. Data that we received in digital form typically do not have a scan associated with them, and so such records do not have a \texttt{scan\_id}.
+
+Information on the above identifiers can be found at:
+\begin{quote}
+  \url{https://github.com/canmod/iidda/blob/main/README.md#identifiers}
+\end{quote}
+The following vignette describes how to investigate the provenance of a record using these identifiers:
+\begin{quote}
+  \url{https://canmod.github.io/iidda-tools/iidda.api/articles/Provenance}
+\end{quote}
+Metadata for the unharmonized, harmonized, and normalized versions of our prepared data are available at:
+\begin{quote}
+\url{https://github.com/canmod/iidda/blob/main/README.md#canmod-digitization-project}
+\end{quote}
+These metadata contain links to all of the resources (R scripts, Excel/CSV files, and PDFs) used to produce the datasets.
+
+\subsection{Quality control}\label{sec:appendix-quality-control}
+
+We performed two types of quality control checks: marginal total cross checks and comparisons with the PHAC portal. This work was performed by S.C. Walker, G. MacKinnon, S. Manzin, S. Cygu, and Q. Zhu. After describing these two types of checks, we describe how the results of these checks were used to improve the quality of the data by fixing data-entry errors and improving our normalization process.
+
+\paragraph{Marginal total cross checks:} Using marginal totals from the comprehensive dataset, we performed cross checks over the three available stratifications of data: time scales, locations, and diseases. The analysis involved several comparisons at different levels of data aggregation.
+
+For time-scales, sub-annual records, such as weekly, monthly, or quarterly data, were aggregated to the annual scale and compared to the available annual records. When multiple sub-annual time scales were present, their annual sums were also compared to one another.
+
+For locations, sub-national data were aggregated to the national level, and this sum was compared with the reported national total. Both the national and sub-national totals were aggregated to yearly scales for comparison with records in the PHAC portal.
+
+For diseases, sub-class totals were aggregated and compared to the overall disease totals. In cases where the sum of sub-diseases was less than the reported disease total, the difference was labeled as \texttt{disease\_unaccounted} and included in the normalized data as a derived entry with a \texttt{record-origin} of \texttt{derived-unaccounted-cases}.
+
+For each cross check, we put all records with discrepancies into a CSV file with provenance information for finding the original scans and excel files to more easily fix potential errors. The scripts for producing these CSV files can be found at:
+\begin{quote}
+  \url{https://github.com/canmod/iidda/tree/main/pipelines/canmod-cross-checks/prep-scripts}
+\end{quote}
+A link to download the current state of these CSV files, along with the data themselves, is located at:
+\begin{quote} 
+  \url{https://github.com/canmod/iidda/blob/main/README.md#canmod-digitization-project}
+\end{quote}
+We plan to continue addressing these potential issues, but if you use the archive, please check the discrepancy files to see if any data of interest is flagged. Given that our pipelines and tools are open, users are encouraged to fix issues and submit pull requests to our GitHub repository:
+\begin{quote}
+  \url{https://github.com/canmod/iidda}
+\end{quote}
+The following list summarizes the current status of each cross-check:
+%%
+\begin{itemize}
+  \item Time-scale cross checks
+  \begin{itemize}
+    \item Total number of year-location-disease combinations with discrepancies: \input{n_time_scale_cross_check}
+    \item Percentage of these combinations without these discrepancies: $>$\input{perc_yr_loc_no_err}\%
+    \item Percentage of these discrepancies that are from handwritten data: \input{perc_ts_cc_err_handwritten}\%
+  \end{itemize}
+  \item Location cross checks
+  \begin{itemize}
+    \item Total number of period-disease pairs with discrepancies: \input{n_location_cross_check}
+    \item Percentage of these pairs without these discrepancies: $>$\input{perc_pd_dis_no_err}\%
+    \item Percentage of these discrepancies that are from handwritten data: \input{perc_loc_cc_err_handwritten}\%
+  \end{itemize}
+  \item Disease cross checks
+  \begin{itemize}
+    \item Total number of period-location pairs with discrepancies: \input{n_disease_cross_check}
+    \item Percentage of these pairs without these discrepancies: $>$\input{perc_pd_loc_no_err}\%
+    \item Percentage of these discrepancies that are from handwritten data: \input{perc_dis_cc_err_handwritten}\%
+  \end{itemize}
+\end{itemize}
+%%
+It is difficult to combine this information into an estimate of the overall proportion of the harmonized dataset that is error free, because the above estimates are for different stratifications of the data. We can expect errors to yield discrepancies in more than one cross check. For example, a single data-entry error in a sub-disease, province, and week could trigger a discrepancy in all three cross checks if the disease, national, and annual data were reported as well. Not all of these discrepancies represent our data-entry errors because sometimes the original sources are inconsistent or unclear (especially in the handwritten data). Sources also varied in the quality of their marginal totals, and so we removed these totals from our cross checks. But overall, given that the percentages of the combinations of factors that are free of known discrepancies are all greater than 99\%, we do not expect that many more data-entry errors remain.
+
+\paragraph{Comparing with the PHAC portal:} We also compared the national and yearly data on the PHAC portal (\url{https://diseases.canada.ca/notifiable}) with aggregated national and yearly totals in \datacronym\ for what we believe are the same diseases. We made these comparisons visually using line plots. \cref{fig:appendix-chickenpox} gives an example using chickenpox.
+
+\begin{figure}
+  \includegraphics[width=1\textwidth]{phac-portal-comparisons/chickenpox.png}
+  \caption{Chickenpox as an example of a comparison between our archive and the PHAC portal. The top panel gives yearly incidence from \datacronym\ in red and the PHAC portal in grey. The bottom panel gives the total population of all reporting provinces for each source. Jumps in this bottom panel are caused by provinces being added or dropped from each source. For chickenpox the reported incidence is very similar in both sources during times when the reporting population is identical. Comparisons for all diseases that are shared by both datasets can be found on the website for the paper: \url{https://github.com/canmod/candid/tree/main/output/phac-portal-comparisons}.}\label{fig:appendix-chickenpox}
+\end{figure}
+
+We do not expect the data sources to match exactly, for a variety of reasons. Before 1924 and after 2000 all of the data come from provincial data sources, and so our spatial coverage is limited at these times, whereas the PHAC portal typically reports using data from more provinces after 1924 (though not always, as is evident in the bottom panel of \cref{fig:appendix-chickenpox}). \datacronym\ historical source documents presumably included the best numbers at the time. PHAC may have updated these numbers to account for data quality corrections or changes in criteria for determining whether a case qualifies as a specific disease. Discrepancies could also occur because the sub-diseases included in a particular disease change over time.
+
+\paragraph{Fixing data:} These data quality checks have allowed us to correct errors, and to continue to do so, including data-entry typos (e.g., if 500 cases should have been 50), fixing bugs in preparation scripts, and rethinking the interpretation of data source organization. For instance, the difference between zero incidence and missing incidence was not clear in some of the handwritten data (\cref{fig:handwritten-eg}). Additionally, we needed to change how we aggregated sub-diseases to be comparable with aggregations on the PHAC portal.
+
+\subsection{Polio methods}\label{sec:appendix-polio}
+
+We analyzed weekly provincial polio data. For each province and week, we calculated the weekly incidence rate by multiplying the number of new cases by 100,000 and dividing by the interpolated population for that week. To estimate the national incidence rate, we summed the provincial cases and divided by the population of provinces with available data, then multiplied by 100,000. Vertical lines in the plot \cref{fig:polio-plot} indicate the week with the highest national incidence in a given polio year, which we defined as the 52-week period centered around epidemiological week 34, the typical yearly peak for polio. We plotted peaks only for years with more than 20 total cases reported in the country.
+
+We identified the peak polio week for each combination of province and polio year. We defined the peak as the week in the polio year with the highest incidence. To ensure sufficient data for estimating a clear peak, we excluded combinations with sparse or limited case counts ($\le 5$ weeks of non-zero incidence or $\le 20$ total cases). \Cref{fig:polio-peak-month} shows the distribution of peak weeks by province and highlights that most provinces in most years peaked between August and October.
+
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{polio-hist.png}
+\caption{Histograms of the distribution of the peak week binned by month.
+Each panel gives the distribution for Canada (top panel) and each province.}\label{fig:polio-peak-month}
+\end{figure}
+
+
+
+\subsection{Whooping cough methods}\label{sec:appendix-whooping-cough}
+
+We estimated the annual incidence rate in each of the six geographic regions of Canada, and Canada as a whole, as follows. We first computed the average daily number of whooping cough cases for each province or territory by summing the reported cases over all available time periods within a year and dividing by the total number of observed days. We then estimated the total annual cases for each province by scaling this daily rate by the total number of days in the year, accounting for any missing data. Summing these estimates across the provinces within each geographical region gave us the total estimated cases per region. Finally, we calculated the incidence rate per 100,000 individuals by dividing the regional total estimated cases by the total regional population and scaling appropriately. These sums and averages were not contaminated by double counting, as each reported or implied case is represented only once in the normalized dataset (see \cref{sec:appendix-normalized}). However, our method could be affected by within-year variation in incidence rates that did not average out over the sample of available time periods.
+
+Details for these calculations are as follows:
+%%
+\begin{itemize}
+    \item Let \( x_{ij} \) be the number of new whooping cough cases reported during time period \( i \) (e.g., week, month, or quarter) within province or territory \( j \) of Canada.
+    \item Let \( n_{ij} \) be the number of days in time period \( i \) within province or territory \( j \).
+    \item Let \( \Omega_k \) be the set of all time periods \( i \) within year \( k \). Note that \( \Omega_k \) may not include all possible periods if data are missing for some weeks, months, or quarters.
+    \item Let \( \Psi_l \) be the set of provinces and territories \( j \) that are contained within geographical region \( l \) of Canada (e.g., Atlantic, Quebec, Ontario, Prairies, British Columbia, Territories).
+    \item Let \( N_k \) be the total number of days in year \( k \) (either 365 or 366).
+    \item Let \( p_{kj} \) be the population of province or territory \( j \) during year \( k \).
+\end{itemize}
+
+\begin{enumerate}
+    \item \textbf{Average Daily Cases in Year \( k \) and Province \( j \):}
+
+    \[
+    \text{Average Daily Cases}_{kj} = \frac{\sum_{i \in \Omega_k} x_{ij}}{\sum_{i \in \Omega_k} n_{ij}}
+    \]
+
+    \item \textbf{Estimated Total Annual Cases in year \( k \) in Province \( j \):}
+  
+    \[
+    \text{Estimated Annual Cases}_{kj} = N_k \times \left( \frac{\sum_{i \in \Omega_k} x_{ij}}{\sum_{i \in \Omega_k} n_{ij}} \right)
+    \]
+
+    \item \textbf{Total Estimated Cases in Year \( k \) and Region \( l \):}
+
+    Sum the estimated annual cases over all provinces and territories \( j \) within region \( l \):
+
+    \[
+    \text{Total Estimated Cases}_{kl} = N_k \times \sum_{j \in \Psi_l} \left( \frac{\sum_{i \in \Omega_k} x_{ij}}{\sum_{i \in \Omega_k} n_{ij}} \right)
+    \]
+
+    \item \textbf{Incidence Rate per 100,000 Individuals in Year \( k \) and Region \( l \):}
+
+    Calculate the incidence rate by dividing the total estimated cases by the total population of the region and scaling by 100,000:
+
+    \[
+    \text{Incidence Rate}_{kl} = 100,000 \times N_k \times \frac{\sum_{j \in \Psi_l} \left( \frac{\sum_{i \in \Omega_k} x_{ij}}{\sum_{i \in \Omega_k} n_{ij}} \right)}{\sum_{j \in \Psi_l} p_{kj}}
+    \]
+\end{enumerate}
+
+\end{document}
