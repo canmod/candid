@@ -36,6 +36,7 @@ canmod*.rdata
 phac*.rdata
 harmonized_sample_size
 disease-hierarchies/**
+ms_flat.tex
 n-diseases-page-1
 n-diseases-page-2
 n-diseases-page-3

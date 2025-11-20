@@ -6,3 +6,4 @@ ARTIFACTS += canmod*.rdata
 ARTIFACTS += phac*.rdata
 ARTIFACTS += n_sources
 ARTIFACTS += polio-hist.png
+ARTIFACTS += ms_flat.tex

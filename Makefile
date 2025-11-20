@@ -7,19 +7,53 @@ SHELL := /bin/sh
 -include float.mk
 -include artifacts.mk
 
+all : ms.pdf ms_flat.pdf S1_Appendix.pdf
 
-all : ms.pdf
 
-ms.pdf : ms.tex preamble.tex
-ms.pdf : $(wildcard *.bib) $(wildcard *.sty) $(wildcard *.cls)
-ms.pdf : $(ALL_STATS) $(ALL_FIGS_AND_TABLES)
+ms.pdf : ms.tex bibliography.bib plos2025.bst
+ms.pdf :  $(FIGS_PDF) $(TABLES) $(ALL_STATS)
 	@echo "--------------------"
 	@echo "Rendering manuscript PDF"
+	@echo "(with embedded figures)"
 	@echo "--------------------"
 	@pdflatex ms
 	@bibtex ms
 	@pdflatex ms
 	@pdflatex ms
+
+
+ms_flat.pdf : ms_flat.tex bibliography.bib plos2025.bst
+ms_flat.pdf :  $(FIGS) $(TABLES)
+	@echo "--------------------"
+	@echo "Rendering flattened manuscript PDF"
+	@echo "(without embedded figures)"
+	@echo "--------------------"
+	@pdflatex ms_flat
+	@bibtex ms_flat
+	@pdflatex ms_flat
+	@pdflatex ms_flat
+
+
+ms_flat.tex : ms.tex flatten-tex.R
+ms_flat.tex : $(ALL_STATS)
+	@echo "--------------------"
+	@echo "Flattening LaTeX inputs in ms.tex"
+	@echo "--------------------"
+	@Rscript flatten-tex.R
+
+
+
+S1_Appendix.pdf : S1_Appendix.tex supporting-information-title.tex bibliography.bib
+S1_Appendix.pdf : $(FIGS_HIERARCHY) $(FIGS_AGENCY) $(FIGS_PORTAL) $(ALL_STATS)
+S1_Appendix.pdf : preamble.tex
+	@echo "--------------------"
+	@echo "Rendering $@"
+	@echo "--------------------"
+	@pdflatex S1_Appendix
+	@bibtex  S1_Appendix
+	@pdflatex S1_Appendix
+	@pdflatex S1_Appendix
+
 
 $(STATS_DATA) : stats-data.R
 	@echo "--------------------"
@@ -32,7 +66,7 @@ Fig%.pdf : Fig%.tif tif-to-pdf.R
 	@echo "--------------------"
 	@echo "Converting $< to $@"
 	@echo "--------------------"
-	@Rscript tif-to-pdf.R $< 
+	@Rscript tif-to-pdf.R $<
 
 Fig%.tif : Fig%.R
 	@echo "--------------------"
