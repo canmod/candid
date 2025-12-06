@@ -5,16 +5,18 @@ SHELL := /bin/sh
 
 -include stats.mk
 -include float.mk
+-include data.mk
 -include artifacts.mk
 
 all : ms.pdf ms_flat.pdf S1_Appendix.pdf
 
-
+# Preprint version of manuscript
 ms.pdf : ms.tex bibliography.bib plos2025.bst
 ms.pdf :  $(FIGS_PDF) $(TABLES) $(ALL_STATS)
 	@echo "--------------------"
 	@echo "Rendering manuscript PDF"
 	@echo "(with embedded figures)"
+	@echo "(with statistics as inputs from external files)"
 	@echo "--------------------"
 	@pdflatex ms
 	@bibtex ms
@@ -22,11 +24,13 @@ ms.pdf :  $(FIGS_PDF) $(TABLES) $(ALL_STATS)
 	@pdflatex ms
 
 
+# Journal submission version of manuscript
 ms_flat.pdf : ms_flat.tex bibliography.bib plos2025.bst
 ms_flat.pdf :  $(FIGS) $(TABLES)
 	@echo "--------------------"
 	@echo "Rendering flattened manuscript PDF"
 	@echo "(without embedded figures)"
+	@echo "(with statistics as literals values in the .tex file)"
 	@echo "--------------------"
 	@pdflatex ms_flat
 	@bibtex ms_flat
@@ -34,15 +38,18 @@ ms_flat.pdf :  $(FIGS) $(TABLES)
 	@pdflatex ms_flat
 
 
+# Convert ms.tex to a flattened version ms_flat.tex
 ms_flat.tex : ms.tex flatten-tex.R
 ms_flat.tex : $(ALL_STATS)
 	@echo "--------------------"
-	@echo "Flattening LaTeX inputs in ms.tex"
+	@echo "Flattening ms.tex"
+	@echo "(inserting literal statistic values into the ms_flat.tex file)"
+	@echo "(removing figure inclusions from ms_flat.tex)"
 	@echo "--------------------"
 	@Rscript flatten-tex.R
 
 
-
+# Supporting information appendix
 S1_Appendix.pdf : S1_Appendix.tex supporting-information-title.tex bibliography.bib
 S1_Appendix.pdf : $(FIGS_HIERARCHY) $(FIGS_AGENCY) $(FIGS_PORTAL) $(ALL_STATS)
 S1_Appendix.pdf : preamble.tex
@@ -55,7 +62,8 @@ S1_Appendix.pdf : preamble.tex
 	@pdflatex S1_Appendix
 
 
-$(STATS_DATA) : stats-data.R
+
+$(STATS_DATA) : stats-data.R $(DATASETS) $(LOOKUP)
 	@echo "--------------------"
 	@echo "Computing stats about the data that are"
 	@echo "reported in the manuscript using stats-data.R"
@@ -68,7 +76,7 @@ Fig%.pdf : Fig%.tif tif-to-pdf.R
 	@echo "--------------------"
 	@Rscript tif-to-pdf.R $<
 
-Fig%.tif : Fig%.R
+Fig%.tif : Fig%.R $(DATASETS) $(LOOKUP)
 	@echo "--------------------"
 	@echo "Rendering $@ with $<"
 	@echo "--------------------"
@@ -144,8 +152,9 @@ clean-figs-tables-stats :
 	@rm -f $(ALL_STATS)
 
 clean-pulled-data :
-	@rm -f canmod*.rdata
+	@rm -f $(DATASETS) $(LOOKUP)
 
+# Be careful!
 fresh :
 	@make clean
 	@make clean-pulled-data

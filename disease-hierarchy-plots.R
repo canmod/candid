@@ -62,6 +62,7 @@ viz = function(scheme, obs_dat, hierarchy, focal) {
   nodes = (hierarchy
     |> filter(basal_disease %in% focal)
     |> mutate(observed = disease %in% obs_diseases)
+    |> mutate(observed = ifelse(observed, "observed", "not observed"))
   )
   all_nodes = (
        nodes[, c("disease", "nesting_disease", "basal_disease"), drop = FALSE]
@@ -95,6 +96,7 @@ viz = function(scheme, obs_dat, hierarchy, focal) {
         )
       , lineheight = 0.7
     )
+    + scale_colour_discrete(name = "")
     + th
     + ggtitle(date_sum, place_sum)
     + coord_cartesian(clip = "off")

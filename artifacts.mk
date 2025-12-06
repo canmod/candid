@@ -1,9 +1,9 @@
 ARTIFACTS := $(ALL_FIGS_AND_TABLES)
 ARTIFACTS += $(ALL_STATS)
 ARTIFACTS += wordcount.txt
-ARTIFACTS += *.pdf
-ARTIFACTS += canmod*.rdata
-ARTIFACTS += phac*.rdata
+ARTIFACTS += ms.pdf ms_flat.pdf S1_Appendix.pdf
+ARTIFACTS += $(DATASETS)
+ARTIFACTS += $(LOOKUP)
 ARTIFACTS += n_sources
 ARTIFACTS += polio-hist.png
 ARTIFACTS += ms_flat.tex

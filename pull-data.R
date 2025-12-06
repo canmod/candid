@@ -3,9 +3,8 @@ options(iidda_api_msgs = FALSE)
 options(iidda_api_all_char = TRUE)
 options(iidda_api_pull_msg = TRUE)
 
-
-save_frame = function(id, fn) {
-  id |> fn() |> saveRDS(file = sprintf("%s.rdata", id))
+save_frame = function(id, fn, tag = "") {
+  id |> fn() |> saveRDS(file = sprintf("%s%s.rdata", id, tag))
   invisible(NULL)
 }
 data_ids = iidda.api::candid_data_ids()

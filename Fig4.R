@@ -19,10 +19,7 @@ first_page = 4 ## number labelling the first figure in this series
 
 canmod_cdi_normalized = readRDS("canmod-cdi-normalized.rdata")
 
-
 normalized_for_extent_plot = (canmod_cdi_normalized
-  # |> mutate(time_scale = ifelse(time_scale == "2wk", "wk", time_scale))
-  # |> mutate(time_scale = ifelse(time_scale == "3qr", "qr", time_scale))
   |> filter(time_scale != "3qr")
   |> mutate(time_scale = case_when(
         time_scale == "wk" ~ "weekly"
@@ -87,12 +84,12 @@ plots = iidda_availability(normalized_for_extent_plot
   , x_title = "Year"
   , x_breaks = seq(
         as.POSIXct("1910-01-01")
-      , as.POSIXct("2010-01-01")
+      , as.POSIXct("2020-01-01")
       , by = "20 years"
     )
   , x_minor_breaks = seq(
         as.POSIXct("1910-01-01")
-      , as.POSIXct("2010-01-01")
+      , as.POSIXct("2020-01-01")
       , by = "5 years"
     )
   , x_date_labels = "%Y"
