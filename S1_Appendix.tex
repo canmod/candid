@@ -148,6 +148,11 @@ In addition to download links, the above web page covers the following additiona
 \url{https://github.com/canmod/candid}
 \end{quote}
 
+\noindent We have deposited our three cleaned datasets (unharmonized, harmonized, and normalized) in Zenodo:
+\begin{quote}
+\url{https://doi.org/10.5281/zenodo.17459492}
+\end{quote}
+
 \clearpage
 
 \section{Data preparation pipelines}\label{sec:appendix-data-prep}
@@ -454,16 +459,22 @@ Details for these calculations are as follows:
 \end{itemize}
 
 \begin{enumerate}
-    \item \textbf{Average Daily Cases in Year \( y \) and Province \( \ell \):}
+    \item \textbf{Average Daily Cases in Year \( y \) and Location (Province or Territory) \( \ell \):}
 
     \[
     \text{Average Daily Cases}_{y\ell} = \frac{\sum_{t \in {\mathcal T}_y} c_{t\ell}}{\sum_{t \in {\mathcal T}_y} d_{t\ell}}
     \]
 
+    \item \textbf{Total Population in Region \( r \) during Year \( y \):}
+    
+    \[
+    \text{Total Population}_{yr} = \sum_{\ell \in {\mathcal L}_r} p_{y\ell}
+    \]
+
     \item \textbf{Estimated Total Annual Cases in year \( y \) in Province \( \ell \):}
   
     \[
-    \text{Estimated Annual Cases}_{y\ell} = D_y \times \left( \frac{\sum_{t \in {\mathcal T}_y} c_{t\ell}}{\sum_{t \in {\mathcal T}_y} d_{t\ell}} \right)
+    \text{Estimated Annual Cases}_{y\ell} = D_y \times \text{Average Daily Cases}_{y\ell}
     \]
 
     \item \textbf{Total Estimated Cases in Year \( y \) and Region \( r \):}
@@ -471,7 +482,7 @@ Details for these calculations are as follows:
     Sum the estimated annual cases over all provinces and territories \( \ell \) within region \( r \):
 
     \[
-    \text{Total Estimated Cases}_{yr} = D_y \times \sum_{\ell \in {\mathcal L}_r} \left( \frac{\sum_{t \in {\mathcal T}_y} c_{t\ell}}{\sum_{t \in {\mathcal T}_y} d_{t\ell}} \right)
+    \text{Total Estimated Cases}_{yr} = \sum_{\ell \in {\mathcal L}_r} \left(\text{Estimated Annual Cases}_{y\ell} \right)
     \]
 
     \item \textbf{Incidence Rate per 100,000 Individuals in Year \( y \) and Region \( r \):}
@@ -479,8 +490,9 @@ Details for these calculations are as follows:
     Calculate the incidence rate by dividing the total estimated cases by the total population of the region and scaling by 100,000:
 
     \[
-    \text{Incidence Rate}_{yr} = 100,000 \times D_y \times \frac{\sum_{\ell \in {\mathcal L}_r} \left( \frac{\sum_{t \in {\mathcal T}_y} c_{t\ell}}{\sum_{i \in {\mathcal T}_y} d_{t\ell}} \right)}{\sum_{\ell \in {\mathcal L}_r} p_{y\ell}}
+    \text{Incidence Rate}_{yr} = 100,000 \times \frac{\text{Total Estimated Cases}_{yr}}{\text{Total Population}_{yr}}
     \]
+
 \end{enumerate}
 
 \clearpage
