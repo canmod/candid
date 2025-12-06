@@ -50,7 +50,7 @@ The core principle is that digitized Excel files should mirror the structure and
     - The word `Unclear`, with a special string format:
       > `{guess_1}-{guess_2}-...-{guess_n} (unclear)`
       (e.g., `36-23-59 (unclear)`), meaning that the value is missing because the number is difficult to read but we have one or more guesses. Please place your best guess first, followed by the second best guess, etc.
-    - Phrases of the format `Wrong but clear total in this cell is {value}` means that this cell should contain a marginal total (e.g., annual total), and that the value is clearly written but is not the correct total
+    - Phrases of the format `Wrong but clear total in this cell is {value}` means that this cell should contain a marginal total (e.g., annual total), and that the value is clearly written but is not the correct total obtained by summing up the component values (e.g., weekly counts)
 - When several source documents have the same or similar formatting, the formatting of the corresponding digitized Excel documents should also be similar to each other and consistent with the source
 - If you are unsure how to enter data, discuss the issue with the group so this document can be clarified or expanded
 
