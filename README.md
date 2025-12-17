@@ -1,8 +1,8 @@
 # Canadian Notifiable Disease Incidence Dataset (CANDID)
 
-This repository contains all code used to produce the CANDID manuscript and associated figures, tables, and statistics.
+This repository contains all code used to produce the CANDID manuscript and associated figures, tables, and statistics. The published version is [here](https://journals.plos.org/globalpublichealth/article?id=10.1371/journal.pgph.0005550).
 
-The following steps from a unix-like command line should reproduce the manuscript.
+The following steps from a unix-like command line will reproduce the manuscript if all the dependencies are available.
 
 ```
 Rscript install-iidda-r-pkgs.R
@@ -21,6 +21,6 @@ The `configure` command does the following.
 5. Check that required LaTeX packages are available
 6. Pull the CANDID datasets and store them as `rdata` files
 
-The `make` command creates a PDF of the manuscript and all statistics, images, and tables that either appear in the PDF, will appear in the published article, or on this repository. The figure files, `Fig1.tif` to `Fig8.tif`, are those that appear in the main text of the manuscript.
+The `make` command creates a PDF of the manuscript and all statistics, images, and tables that either appear in the PDF, will appear in the published article, or on this repository. The figure files, `Fig1.tif` to `Fig8.tif`, are those that appear in the main text of the manuscript. The document containing supplementary information, `S1_Appendix.pdf`, is also produced.
 
-A pre-rendered version of the manuscript is [output/ms.pdf](output/ms.pdf).
+A pre-rendered version of the manuscript is [output/ms.pdf](output/ms.pdf), and this [output](output) directory contains pre-rendered versions of other related files.
