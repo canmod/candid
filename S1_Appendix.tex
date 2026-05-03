@@ -52,8 +52,8 @@ The following paragraphs describe the sources of data, including both federal an
 The CNDSS data have been published using different titles that have changed over time, many of which are (at the time of writing) difficult or impossible to find using an online search engine without physically going to libraries and archives. Ref. \cite{summaryNotifiable1954} provides annual communicable disease incidence data by province from 1924 to 1954,  but it does not provide a list of the titles used to publish these data. We have been able to find some of these titles, but not all of them. The titles used by Statistics Canada and Health and Welfare Canada to publish CNDSS data changed over time, and we have been able to find some of these titles, but not all of them. 
 
 \begin{description}
-\item[1924-1959] During this period, the Dominion Bureau of Statistics compiled provincial communicable disease incidence data. Photocopies that we obtained from Statistics Canada are evidence of these compilations. In 1954, the Bureau published annual incidence data from 1924-1952 \cite{summaryNotifiable1954}. This report states that the Dominion Bureau of Statistics began publishing incidence data in 1952 under the title ``Summary of Cases of Notifiable Diseases in Canada''. This report also states that the Dominion Bureau of Statistics compiled ``a restricted monthly release'' of incidence data from 1924--1932 and that in 1933 this became a ``printed weekly report.'' The  phrase ``weekly communicable disease report'' was used by Ref. \cite{summaryNotifiable1954}, suggesting that this was the name of the ``printed weekly report''. Again we were unable to find these releases, reports, or publications on the internet, but we have photocopies of data that were presumably used to produce them.
-\item[1959--1974] From 1959-01-24, the Dominion Bureau of Statistics published weekly provincial CNDSS data under the title ``Notifiable Diseases -- Weekly Summary'' until the bureau was renamed Statistics Canada on May 1st 1971. Statistics Canada continued using this name until 1974. Many of these reports from 1959 to 1974 can be found in the Research \& Collections Resource Facility at the University of Alberta.
+\item[1924--1959] During this period, the Dominion Bureau of Statistics compiled provincial communicable disease incidence data. Photocopies that we obtained from Statistics Canada are evidence of these compilations. In 1954, the Bureau published annual incidence data from 1924--1952 \cite{summaryNotifiable1954}. This report states that the Dominion Bureau of Statistics began publishing incidence data in 1952 under the title ``Summary of Cases of Notifiable Diseases in Canada''. This report also states that the Dominion Bureau of Statistics compiled ``a restricted monthly release'' of incidence data from 1924--1932 and that in 1933 this became a ``printed weekly report.'' The  phrase ``weekly communicable disease report'' was used by Ref. \cite{summaryNotifiable1954}, suggesting that this was the name of the ``printed weekly report''. Again we were unable to find these releases, reports, or publications on the internet, but we have photocopies of data that were presumably used to produce them.
+\item[1959--1974] From 1959-01-24, the Dominion Bureau of Statistics published weekly provincial CNDSS data under the title ``Notifiable Diseases -- Weekly Summary'' until the bureau was renamed Statistics Canada on May 1, 1971. Statistics Canada continued using this name until 1974. Many of these reports from 1959 to 1974 can be found in the Research \& Collections Resource Facility at the University of Alberta.
 \item[1975--1976] Statistics Canada and Health and Welfare Canada jointly published weekly provincial CNDSS data using the title ``Notifiable Diseases Weekly Summary Provisional Report'' for less than one year from 1975-04-26 to 1976-01-03.
 \item[1976--1978] During this period, Health and Welfare Canada published weekly provincial CNDSS data using the previous title ``Notifiable Diseases -- Weekly Summary''.
 \item[1979--1989] During this period, Statistics Canada and Health and Welfare Canada jointly published 4-weekly provincial CNDSS data using the title ``Notifiable Diseases Summary''.  At the time of writing, a Google search did not find a digitized copy of CNDSS data for the first quarter of 1979. However, the Canada Diseases Weekly Reports (CDWR) reproduced CNDSS data using this title starting with the four-weekly period ending 1979-04-21. The CDWR continued to reproduce CNDSS data using this title until 1991, but they did not do so for every four-weekly period.  We were able to obtain data for more of these four-weekly periods directly from Statistics Canada, but we were not able to obtain all of them.
@@ -72,8 +72,8 @@ Provincial public health agencies have published data directly, and many of thes
   \item[Saskatchewan, 1921--1922] ``Annual report of the Bureau of Public Health of the Province of Saskatchewan''.
   \item[Saskatchewan, 1923--1926] ``Annual report of the Department of Public Health of the Province of Saskatchewan''.
   \item[Saskatchewan, 1927] ``Annual report of the Department of Public Health and the Vital Statistics report of the Province of Saskatchewan'' .
-  \item[Québec, 1915-1922] ``Rapport annuel du Conseil supérieur d'hygiène de la province de Québec = Annual report of the Superior Board of Health of the Province of Québec''.
-  \item[Québec, 1923-1934] ``Rapport annuel du Service provincial d'hygiène de la province de Québec = Annual report of the Provincial Bureau of Health of the Province of Québec''.
+  \item[Québec, 1915--1922] ``Rapport annuel du Conseil supérieur d'hygiène de la province de Québec = Annual report of the Superior Board of Health of the Province of Québec''.
+  \item[Québec, 1923--1934] ``Rapport annuel du Service provincial d'hygiène de la province de Québec = Annual report of the Provincial Bureau of Health of the Province of Québec''.
   \item[Manitoba, 2004-2017] ``Manitoba Monthly Surveillance Unit Report'' -- available online (at the time of writing) here: \url{https://www.gov.mb.ca/health/publichealth/surveillance/episummary/archive.html}. 
 \end{description}
 
@@ -143,7 +143,7 @@ In addition to download links, the above web page covers the following additiona
 \url{https://github.com/canmod/iidda-tools}
 \end{quote}
 
-\noindent All the code to produce the figures and statistics in this paper are available here:
+\noindent All the code to produce the figures and statistics in this paper is available here:
 \begin{quote}
 \url{https://github.com/canmod/candid}
 \end{quote}
@@ -223,7 +223,7 @@ We developed one open-source R script for each data source that joins the unharm
 \url{https://github.com/canmod/iidda/blob/main/README.md#canmod-digitization-project}
 \end{quote}
 
-Because sources sometimes reported diseases hierarchically, our harmonized disease names were provided in two columns: \texttt{disease}, giving the name of the disease being reported, and \texttt{nesting\_disease}, optionally giving the name of another disease within which the \texttt{disease} is nested. We refer to the values in these \texttt{disease} and \texttt{nesting\_disease} columns collectively as \term{disease names}. These disease names are organized into hierarchies, such that most disease names are nested within another disease name (e.g., hepatitis-A is nested within hepatitis-A-B). We refer to disease names that are not nested within any other disease name as \term{basal diseases}. These basal diseases are plotted in Figures 4-6 of the main text. For a given combination of location and time period, all disease names at or below a specific basal disease in the hierarchy are referred to as its \term{sub-diseases}.
+Because sources sometimes reported diseases hierarchically, our harmonized disease names were provided in two columns: \texttt{disease}, giving the name of the disease being reported, and \texttt{nesting\_disease}, optionally giving the name of another disease within which the \texttt{disease} is nested. We refer to the values in these \texttt{disease} and \texttt{nesting\_disease} columns collectively as \term{disease names}. These disease names are organized into hierarchies, such that most disease names are nested within another disease name (e.g., hepatitis-A is nested within hepatitis-A-B). We refer to disease names that are not nested within any other disease name as \term{basal diseases}. These basal diseases are plotted in Figures 4--6 of the main text. For a given combination of location and time period, all disease names at or below a specific basal disease in the hierarchy are referred to as its \term{sub-diseases}.
 
 In addition to joining harmonized names, the harmonization scripts also apply the following changes:
 %%
@@ -242,7 +242,7 @@ We collected all of the resulting harmonized CSV files into a single file that w
 
 \section{Preparing the normalized CSV file}\label{sec:appendix-normalized}
 
-We developed an open-source R script to remove overlapping data and to add data that are implied but not explicitly provided by the original source documents. Our goal was to ensure that each apparently reported case is represented by a single incidence value in the resulting CSV file. We refer to the resulting file as \emph{normalized} aligning with the concept that normalized databases represent each `fact' only once \cite{tidydata}.
+We developed an open-source R script to remove overlapping data and to add data that are implied but not explicitly provided by the original source documents. Our goal was to ensure that each apparently reported case is represented by a single incidence value in the resulting CSV file. We refer to the resulting file as \emph{normalized}, consistent with the concept that normalized databases represent each `fact' only once \cite{tidydata}.
 
 There are five sources of overlap that could cause cases to be counted more than once:
 \begin{itemize}
@@ -294,7 +294,7 @@ If the two sources produced identical results then this choice would be irreleva
 \caption{Comparing reported Ontario whooping cough incidence from Statistics Canada with the Ontario Ministry of Health. The difference between the two sources is given on the bottom panel. Additional comparisons among similar data from different agencies can be found on the website for this paper: \url{https://github.com/canmod/candid/tree/main/output/agency-comparisons}}\label{fig:appendix-statcanmoh}
 \end{figure}
 
-\paragraph{Resolve overlap caused by disease hierarchies:} To address how this type of overlap is addressed, it is necessary to further define terminology related to disease hierarchies, building on the concepts introduced in the section on \nameref{sec:appendix-harmonized}. The \term{global hierarchy} of a basal disease includes all sub-diseases that appear at least once in the harmonized dataset, while the \term{local hierarchy} is specific to a particular location and time period. Some of these global hierarchies are simple (e.g., whooping cough has no sub-diseases at all) whereas others are complex (e.g., meningitis has 37 sub-diseases in the global hierarchy) with local hierarchies changing over time. 
+\paragraph{Resolve overlap caused by disease hierarchies:} To explain how this type of overlap is addressed, it is necessary to further define terminology related to disease hierarchies, building on the concepts introduced in the section on \nameref{sec:appendix-harmonized}. The \term{global hierarchy} of a basal disease includes all sub-diseases that appear at least once in the harmonized dataset, while the \term{local hierarchy} is specific to a particular location and time period. Some of these global hierarchies are simple (e.g., whooping cough has no sub-diseases at all) whereas others are complex (e.g., meningitis has 37 sub-diseases in the global hierarchy) with local hierarchies changing over time. 
 
 \newpage
 
@@ -326,7 +326,9 @@ We will dig into the meningitis hierarchy a little to give a sense of the comple
   \caption{Global meningitis disease hierarchy highlighting in blue the sub-diseases reported by Manitoba Health in the date ranges given.}\label{fig:appendix-meningitis-man}
 \end{figure}
 
-These examples show how we prevent overlap in disease hierarchies. For each basal disease, we keep only the most detailed sub-diseases that were actually reported for a given place and time. Any intermediate or higher-level totals are removed. In effect, all retained sub-diseases are treated as children of the basal disease, ensuring that every case is counted exactly once. For example, Statistics Canada's 1969--1978 meningitis data (\cref{fig:appendix-meningitis-70s}) included counts for coxsackie, echo, and virus-unspecified meningitis, but also listed a total for viral meningitis. We discarded this total during normalization, so the viral node appears in red to indicate that it is not observed in the normalized data. The stratification of meningitis illustrated in \cref{fig:appendix-meningitis-70s} came from a data source (Statistics Canada) that also reported a total for viral meningitis (historically called aseptic meningitis), but this total was removed in the normalization process and so the viral node is coloured red to indicate that this sub-disease cannot be observed in the normalized data. As another example, Public Health Ontario reported acute and chronic hepatitis B (\cref{fig:appendix-hep}, top), while Statistics Canada and some provinces reported only a single hepatitis B total (\cref{fig:appendix-hep}, bottom). Our approach keeps whichever sub-diseases were actually reported locally and removes overlapping intermediate totals.
+These examples show how we prevent overlap in disease hierarchies. For each basal disease, we keep only the most detailed sub-diseases that were actually reported for a given place and time. Any intermediate or higher-level totals are removed. In effect, all retained sub-diseases are treated as children of the basal disease, ensuring that every case is counted exactly once.
+
+For example, Statistics Canada's 1969--1978 meningitis data (\cref{fig:appendix-meningitis-70s}) included counts for coxsackie, echo, and virus-unspecified meningitis, but also listed a total for viral meningitis. We discarded this total during normalization, so the viral node appears in red to indicate that it is not observed in the normalized data. As another example, Public Health Ontario reported acute and chronic hepatitis B (\cref{fig:appendix-hep}, top), while Statistics Canada and some provinces reported only a single hepatitis B total (\cref{fig:appendix-hep}, bottom). Our approach keeps whichever sub-diseases were actually reported locally and removes overlapping intermediate totals.
 
 \begin{figure}
   \begin{subfigure}{1\textwidth}  
@@ -371,17 +373,17 @@ These metadata contain links to all of the resources (R scripts, Excel/CSV files
 
 \section{Quality control}\label{sec:appendix-quality-control}
 
-We performed two types of quality control checks: marginal total cross checks and comparisons with the PHAC portal. This work was performed by S. Cygu, G. MacKinnon, S. Manzin, S.\,C. Walker, and Q. Zhu. After describing these two types of checks, we describe how the results of these checks were used to improve the quality of the data by fixing data-entry errors and improving our normalization process.
+We performed two types of quality control checks: marginal total cross-checks and comparisons with the PHAC portal. This work was performed by S. Cygu, G. MacKinnon, S. Manzin, S.\,C. Walker, and Q. Zhu. After describing these two types of checks, we describe how the results of these checks were used to improve the quality of the data by fixing data-entry errors and improving our normalization process.
 
-\paragraph{Marginal total cross checks:} Using marginal totals from the comprehensive dataset, we performed cross checks over the three available stratifications of data: time scales, locations, and diseases. The analysis involved several comparisons at different levels of data aggregation.
+\paragraph{Marginal total cross-checks:} Using marginal totals from the comprehensive dataset, we performed cross-checks over the three available stratifications of data: time scales, locations, and diseases. The analysis involved several comparisons at different levels of data aggregation.
 
 For time-scales, sub-annual records, such as weekly, monthly, or quarterly data, were aggregated to the annual scale and compared to the available annual records. When multiple sub-annual time scales were present, their annual sums were also compared to one another.
 
 For locations, sub-national data were aggregated to the national level, and this sum was compared with the reported national total. Both the national and sub-national totals were aggregated to yearly scales for comparison with records in the PHAC portal.
 
-For diseases, sub-class totals were aggregated and compared to the overall disease totals. In cases where the sum of sub-diseases was less than the reported disease total, the difference was labeled as \texttt{disease\_unaccounted} and included in the normalized data as a derived entry with a \texttt{record-origin} of \texttt{derived-unaccounted-cases}.
+For diseases, sub-class totals were aggregated and compared to the overall disease totals. In cases where the sum of sub-diseases was less than the reported disease total, the difference was labeled as \texttt{disease\_unaccounted} and included in the normalized data as a derived entry with \texttt{record\_origin} equal to \texttt{derived-unaccounted-cases}.
 
-For each cross check, we put all records with discrepancies into a CSV file with provenance information for finding the original scans and excel files to more easily fix potential errors. The scripts for producing these CSV files can be found at:
+For each cross-check, we put all records with discrepancies into a CSV file with provenance information for finding the original scans and excel files to more easily fix potential errors. The scripts for producing these CSV files can be found at:
 \begin{quote}
   \url{https://github.com/canmod/iidda/tree/main/pipelines/canmod-cross-checks/prep-scripts}
 \end{quote}
@@ -396,19 +398,19 @@ We plan to continue addressing these potential issues, but if you use the archiv
 The following list summarizes the current status as of Nov 2025 of each cross-check:
 %%
 \begin{itemize}
-  \item Time-scale cross checks
+  \item Time-scale cross-checks
   \begin{itemize}
     \item Total number of year-location-disease combinations with discrepancies: \input{n_time_scale_cross_check}
     \item Percentage of these combinations without these discrepancies: $>$\input{perc_yr_loc_no_err}\%
     \item Percentage of these discrepancies that are from handwritten data: \input{perc_ts_cc_err_handwritten}\%
   \end{itemize}
-  \item Location cross checks
+  \item Location cross-checks
   \begin{itemize}
     \item Total number of period-disease pairs with discrepancies: \input{n_location_cross_check}
     \item Percentage of these pairs without these discrepancies: $>$\input{perc_pd_dis_no_err}\%
     \item Percentage of these discrepancies that are from handwritten data: \input{perc_loc_cc_err_handwritten}\%
   \end{itemize}
-  \item Disease cross checks
+  \item Disease cross-checks
   \begin{itemize}
     \item Total number of period-location pairs with discrepancies: \input{n_disease_cross_check}
     \item Percentage of these pairs without these discrepancies: $>$\input{perc_pd_loc_no_err}\%
@@ -416,7 +418,7 @@ The following list summarizes the current status as of Nov 2025 of each cross-ch
   \end{itemize}
 \end{itemize}
 %%
-It is difficult to combine this information into an estimate of the overall proportion of the harmonized dataset that is error free, because the above estimates are for different stratifications of the data. We can expect errors to yield discrepancies in more than one cross check. For example, a single data-entry error in a sub-disease, province, and week could trigger a discrepancy in all three cross checks if the disease, national, and annual data were reported as well. Not all of these discrepancies represent our data-entry errors because sometimes the original sources are inconsistent or unclear (especially in the handwritten data). Sources also varied in the quality of their marginal totals, and so we removed these totals from our cross checks. Overall, given that the percentages of the combinations of factors that are free of known discrepancies are all greater than 99\%, we do not expect that many more data-entry errors remain.
+It is difficult to combine this information into an estimate of the overall proportion of the harmonized dataset that is error free, because the above estimates are for different stratifications of the data. We can expect errors to yield discrepancies in more than one cross-check. For example, a single data-entry error in a sub-disease, province, and week could trigger a discrepancy in all three cross-checks if the disease, national, and annual data were reported as well. Not all of these discrepancies represent our data-entry errors because sometimes the original sources are inconsistent or unclear (especially in the handwritten data). Sources also varied in the quality of their marginal totals, and so we removed these totals from our cross-checks. Overall, given that the percentages of the combinations of factors that are free of known discrepancies are all greater than 99\%, we do not expect that many more data-entry errors remain.
 
 \paragraph{Comparing with the PHAC portal:} We also compared the national and yearly data on the PHAC portal (\url{https://diseases.canada.ca/notifiable}) with aggregated national and yearly totals in \datacronym\ for what we believe are the same diseases. We made these comparisons visually using line plots. \cref{fig:appendix-chickenpox} gives an example using chickenpox.
 
@@ -439,8 +441,9 @@ We identified the peak polio week for each combination of province and polio yea
 
 \begin{figure}
 \includegraphics[width=0.9\textwidth]{polio-hist.png}
-\caption{Histograms of the distribution of the peak week binned by month.
-Each panel gives the distribution for Canada (top panel) and each province.}\label{fig:polio-peak-month}
+\caption{
+  Monthly-binned histograms of the peak polio week (week with highest incidence) for each province and for Canada.
+}\label{fig:polio-peak-month}
 \end{figure}
 
 \clearpage
